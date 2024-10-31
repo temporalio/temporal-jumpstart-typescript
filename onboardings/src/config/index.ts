@@ -7,7 +7,7 @@ const envCfg = dotenv.load()
 export interface Config {
     Temporal: TemporalConfig
     IsProduction: boolean
-    BFF: BFFConfig
+    API: APIConfig
     PubSub: PubSubConfig
 }
 
@@ -58,7 +58,7 @@ export interface TemporalConfig {
     worker: TemporalWorker
 }
 
-export interface BFFConfig {
+export interface APIConfig {
     port: string
     mtls?: MTLSConfig
     url: URL
@@ -70,46 +70,27 @@ export interface PubSubConfig {
     url: URL
 }
 
-const createBffCfg = async (): Promise<BFFConfig> => {
-    const graphqlUrlEnv = process.env['PUBLIC_GRAPHQL_URL']
-    const graphqlUrl = new URL(graphqlUrlEnv || 'https://localhost:4000/graphql')
+const createApiCfg = async (): Promise<APIConfig> => {
+    const apiUrlEnv = process.env['API_URL']
+    const apiUrl = new URL(apiUrlEnv || 'https://localhost:4000/api')
     const mtls: MTLSConfig = {
-        certChainFile: process.env['BFF_CONNECTION_MTLS_CERT_CHAIN_FILE'],
-        keyFile: process.env['BFF_CONNECTION_MTLS_KEY_FILE'],
-        //key: Buffer.from(process.env['BFF_CONNECTION_MTLS_KEY'] || ''),
-        //certChain: Buffer.from(process.env['BFF_CONNECTION_MTLS_CERT_CHAIN'] || ''),
-        pkcs: process.env['BFF_CONNECTION_MTLS_PKCS'],
-        insecureTrustManager: Boolean(process.env['BFF_CONNECTION_MTLS_INSECURE_TRUST_MANAGER'] || 'false'),
-        keyPassword: process.env['BFF_CONNECTION_MTLS_KEY_PASSWORD'],
-        serverName: process.env['BFF_CONNECTION_MTLS_SERVER_NAME'],
-        serverRootCACertificateFile: process.env['BFF_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE']
+        certChainFile: process.env['API_CONNECTION_MTLS_CERT_CHAIN_FILE'],
+        keyFile: process.env['API_CONNECTION_MTLS_KEY_FILE'],
+        //key: Buffer.from(process.env['API_CONNECTION_MTLS_KEY'] || ''),
+        //certChain: Buffer.from(process.env['API_CONNECTION_MTLS_CERT_CHAIN'] || ''),
+        pkcs: process.env['API_CONNECTION_MTLS_PKCS'],
+        insecureTrustManager: Boolean(process.env['API_CONNECTION_MTLS_INSECURE_TRUST_MANAGER'] || 'false'),
+        keyPassword: process.env['API_CONNECTION_MTLS_KEY_PASSWORD'],
+        serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
+        serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE']
     }
     return {
-        port: graphqlUrl.port,
+        port: apiUrl.port,
         mtls,
-        url: graphqlUrl,
+        url: apiUrl,
     };
 }
-const createPubSubCfg = async (): Promise<PubSubConfig> => {
-    const pubsubUrlEnv = process.env['PUBLIC_SUBSCRIPTIONS_URL']
-    const pubsubUrl = new URL(pubsubUrlEnv || 'http://iforgottopasstheenvironmentvariable.com')
-    const mtls: MTLSConfig = {
-        certChainFile: process.env['PUBSUB_CONNECTION_MTLS_CERT_CHAIN_FILE'],
-        keyFile: process.env['PUBSUB_CONNECTION_MTLS_KEY_FILE'],
-        //key: Buffer.from(process.env['PUBSUB_CONNECTION_MTLS_KEY'] || ''),
-        //certChain: Buffer.from(process.env['PUBSUB_CONNECTION_MTLS_CERT_CHAIN'] || ''),
-        pkcs: process.env['PUBSUB_CONNECTION_MTLS_PKCS'],
-        insecureTrustManager: Boolean(process.env['PUBSUB_CONNECTION_MTLS_INSECURE_TRUST_MANAGER'] || 'false'),
-        keyPassword: process.env['PUBSUB_CONNECTION_MTLS_KEY_PASSWORD'],
-        serverName: process.env['PUBSUB_CONNECTION_MTLS_SERVER_NAME'],
-        serverRootCACertificateFile: process.env['PUBSUB_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE']
-    }
-    return {
-        port: pubsubUrl.port,
-        mtls,
-        url: pubsubUrl,
-    };
-}
+
 const createTemporalCfg = async (): Promise<TemporalConfig> => {
     const mtls: MTLSConfig = {
         certChainFile: process.env['TEMPORAL_CONNECTION_MTLS_CERT_CHAIN_FILE'],
@@ -168,13 +149,13 @@ const createTemporalCfg = async (): Promise<TemporalConfig> => {
 
 
 const temporalCfg = await createTemporalCfg()
-const bffCfg: BFFConfig = await createBffCfg()
+const bffCfg: APIConfig = await createApiCfg()
 const pubSubCfg: PubSubConfig = await createPubSubCfg()
 export const cfg: Config =
     {
         Temporal: temporalCfg,
         IsProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
-        BFF: bffCfg,
+        API: bffCfg,
         PubSub: pubSubCfg,
     }
 
