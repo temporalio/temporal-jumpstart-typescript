@@ -14,6 +14,7 @@
     "app.watch": "tsx watch app/src/index.ts",
     "onboardings": "tsx onboardings/src/index.ts",
     "onboardings.watch": "tsx watch onboardings/src/index.ts",
+    "onboardings:api": "tsx onboardings/src/api/index.ts",
     "update": "npm-check-updates -u && npm i"
   },
   "repository": {
@@ -51,8 +52,11 @@
     "@types/node": "^22.8.4",
     "@types/stack-utils": "^2.0.3",
     "@types/supports-color": "^8.1.3",
+    "@typescript-eslint/parser": "^8.13.0",
     "arg": "^5.0.2",
     "eslint": "^9.13.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.31.0",
     "fs-extra": "^11.2.0",
     "globals": "^15.11.0",
     "npm-check-updates": "*",

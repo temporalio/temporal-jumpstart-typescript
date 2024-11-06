@@ -8,7 +8,6 @@ export interface Config {
     Temporal: TemporalConfig
     IsProduction: boolean
     API: APIConfig
-    PubSub: PubSubConfig
 }
 
 export interface MTLSConfig {
@@ -149,14 +148,12 @@ const createTemporalCfg = async (): Promise<TemporalConfig> => {
 
 
 const temporalCfg = await createTemporalCfg()
-const bffCfg: APIConfig = await createApiCfg()
-const pubSubCfg: PubSubConfig = await createPubSubCfg()
+const apiCfg: APIConfig = await createApiCfg()
 export const cfg: Config =
     {
         Temporal: temporalCfg,
         IsProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
-        API: bffCfg,
-        PubSub: pubSubCfg,
+        API: apiCfg,
     }
 
 function numOrNot(key: string): number | undefined {

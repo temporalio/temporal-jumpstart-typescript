@@ -4,16 +4,13 @@ import {cfg} from '../config/index.js'
 import fs from 'fs'
 import https from 'https'
 import cors from 'cors'
-import swaggerUI from 'swagger-ui-express'
-import swaggerDocument from './swagger.json'
+import { router as v0 } from './v0.js'
 
 const app: Express = express()
 app.use(cors())
 
 
 const onboardings: Router = express.Router()
-
-app.get('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 onboardings.get('/', (req: Request, res: Response) => {
     res.send("Express + TypeScript Server");
@@ -28,7 +25,7 @@ if (cfg.API.mtls && cfg.API.mtls.certChainFile && cfg.API.mtls.keyFile) {
     };
 }
 
-app.use('/', onboardings)
+app.use('/api/v0', v0)
 const httpsServer = https.createServer(options, app)
 httpsServer.listen(cfg.API.url.port, () => {
     console.log(`Running a GraphQL API server at ${cfg.API.url}`)
