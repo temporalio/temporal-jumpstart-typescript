@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 
-export const createWorkerOptions = async (cfg: Config, activities?: object | undefined): Promise<WorkerOptions> => {
+export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
     const {Temporal: tcfg} = cfg
 
     let connection
