@@ -10,8 +10,9 @@
     "esModuleInterop": true
   },
   "include": [
+    "eslint.config.js",
     "scripts/**/*.ts",
     "app/src/**/*.ts",
-    "onboardings/src/**/*.ts"
+    "onboardings/src/**/*.ts",
   ]
 }
