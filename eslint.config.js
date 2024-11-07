@@ -20,9 +20,9 @@ export default [
   pluginJs.configs.recommended,
   ...tsEslint.configs.recommendedTypeChecked,
   importPlugin.flatConfigs.recommended,
-  // stylistic.configs.customize({
-  //   semi: false,
-  // }),
+  stylistic.configs.customize({
+    semi: false,
+  }),
   {
     languageOptions: {
       parserOptions: {
