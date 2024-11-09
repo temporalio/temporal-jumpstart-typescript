@@ -8,6 +8,7 @@ import { router as v0 } from './v0.js'
 
 const app: Express = express()
 app.use(cors())
+app.use(express.json())
 
 const onboardings: Router = express.Router()
 
@@ -24,7 +25,7 @@ if (cfg.API.mtls && cfg.API.mtls.certChainFile && cfg.API.mtls.keyFile) {
   }
 }
 
-app.use('/api/v0', v0)
+app.use('/api/v1beta1', v0)
 
 const httpsServer = https.createServer(options, app)
 httpsServer.listen(cfg.API.url.port, () => {

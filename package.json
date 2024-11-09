@@ -43,6 +43,9 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@bufbuild/buf": "^1.46.0",
+    "@bufbuild/protobuf": "^2.2.2",
+    "@bufbuild/protoc-gen-es": "^2.2.2",
     "@eslint/js": "^9.13.0",
     "@stylistic/eslint-plugin": "^2.10.1",
     "@stylistic/eslint-plugin-js": "^2.10.1",

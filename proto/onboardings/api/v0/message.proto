@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package onboardings.api.v0;
+
+message PingRequest {
+  string name = 1;
+}
+message PingResponse {
+  string name = 1;
+}
