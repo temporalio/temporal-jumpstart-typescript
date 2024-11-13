@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package onboardings.api.v0;
+package temporal.onboardings.workflows.v0;
 
 message PingRequest {
   string name = 1;
