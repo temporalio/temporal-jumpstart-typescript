@@ -7,15 +7,12 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsc --build",
     "build.watch": "tsc --build --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "app": "tsx app/src/index.ts",
-    "app.watch": "tsx watch app/src/index.ts",
-    "onboardings:build": "tsc --build onboardings/scripts/build-workflow-bundle.ts",
-    "onboardings": "tsx onboardings/src/index.ts",
-    "onboardings.watch": "tsx watch onboardings/src/index.ts",
-    "onboardings:api": "tsx onboardings/src/api/index.ts",
+    "build": "tsc --build scripts/build-workflow-bundle.ts",
+    "domain": "tsx ./src/index.ts",
+    "domain.watch": "tsx watch onboardings/src/index.ts",
+    "api": "tsx onboardings/src/api/index.ts",
     "update": "npm-check-updates -u && npm i"
   },
   "repository": {
