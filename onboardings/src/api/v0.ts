@@ -1,5 +1,5 @@
 import express, { type Router, Request, Response, NextFunction } from 'express'
-import {type PingRequest, PingRequestSchema, PingResponse} from '@generated/temporal/onboardings/api/v0/api_pb.js'
+import {type PingRequest, PingRequestSchema, PingResponse} from '@generated/onboardings/api/v0/api_pb.js'
 import { fromJson, JsonObject, JsonValue } from '@bufbuild/protobuf'
 import { Clients } from '../clients/index.js'
 import { Config } from '../config/index.js'

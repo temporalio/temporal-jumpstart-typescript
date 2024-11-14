@@ -7,7 +7,7 @@ export interface Clients {
 }
 
 export const createClients = async (cfg: Config): Promise<Clients> => {
-  const temporalClient = await createClient(cfg.Temporal)
+  const temporalClient = await createClient(cfg.temporal)
   return {
     temporal: temporalClient,
   }

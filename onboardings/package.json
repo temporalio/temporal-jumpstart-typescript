@@ -9,8 +9,9 @@
   "scripts": {
     "build.watch": "tsc --build --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:workflowold": "tsc --build scripts/build-workflow-bundle.ts",
-    "build:workflow": "tsx scripts/build-workflow-bundle.ts",
+    "build:workflowold": "tsc --build src/scripts/build-workflow-bundle.ts",
+    "build:workflow": "tsx src/scripts/build-workflow-bundle.ts",
+    "build": "tcs --build",
     "domain": "tsx ./src/index.ts",
     "domain.watch": "tsx watch onboardings/src/index.ts",
     "api": "tsx onboardings/src/api/index.ts",

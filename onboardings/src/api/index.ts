@@ -20,17 +20,17 @@ app.use(express.json())
 // })
 
 let options = {}
-if (cfg.API.mtls && cfg.API.mtls.certChainFile && cfg.API.mtls.keyFile) {
+if (cfg.api.mtls && cfg.api.mtls.certChainFile && cfg.api.mtls.keyFile) {
 // Start the server at port
   options = {
-    key: fs.readFileSync(cfg.API.mtls?.keyFile),
-    cert: fs.readFileSync(cfg.API.mtls?.certChainFile),
+    key: fs.readFileSync(cfg.api.mtls?.keyFile),
+    cert: fs.readFileSync(cfg.api.mtls?.certChainFile),
   }
 }
 
 const v0 = createV0Router({ config: cfg, clients })
 app.use('/v0', v0)
 const httpsServer = https.createServer(options, app)
-httpsServer.listen(cfg.API.url.port, () => {
-  console.log(`API server listening at ${cfg.API.url.toString()}`)
+httpsServer.listen(cfg.api.url.port, () => {
+  console.log(`API server listening at ${cfg.api.url.toString()}`)
 })

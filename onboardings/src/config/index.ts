@@ -1,14 +1,17 @@
 import dotenv from 'dotenv-extended'
 import fs from 'fs/promises'
 import { URL } from 'node:url'
+import { getTsconfig} from './get-tsconfig.js'
+import path from 'path'
 
+const tsConfig = getTsconfig()
 // load from .env file
 dotenv.load()
 
 export interface Config {
-  Temporal: TemporalConfig
-  IsProduction: boolean
-  API: APIConfig
+  temporal: TemporalConfig
+  isProduction: boolean
+  api: APIConfig
 }
 
 export interface MTLSConfig {
@@ -43,6 +46,7 @@ export interface TemporalWorker {
   name?: string
   capacity?: TemporalWorkerCapacity
   rateLimits?: TemporalWorkerRateLimits
+  bundlePath: string
 }
 
 // #TEMPORAL_WORKER_RATE_LIMITS_MAX_WORKER_ACTIVITIES_PER_SECOND=
@@ -84,11 +88,11 @@ const createApiCfg = async (): Promise<APIConfig> => {
     serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
     serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE'],
   }
-  return {
+  return Promise.resolve({
     port: apiUrl.port,
     mtls,
     url: apiUrl,
-  }
+  })
 }
 
 const createTemporalCfg = async (): Promise<TemporalConfig> => {
@@ -138,6 +142,7 @@ const createTemporalCfg = async (): Promise<TemporalConfig> => {
       maxTaskQueueActivitiesPerSecond: numOrNot('TEMPORAL_WORKER_RATE_LIMITS_MAX_TASK_QUEUE_ACTIVITIES_PER_SECOND'),
     },
     taskQueue: assertCfg('TEMPORAL_WORKER_TASK_QUEUE'),
+    bundlePath: path.join(tsConfig.options.outDir || './', assertCfg('TEMPORAL_WORKER_BUNDLE_PATH')),
   }
   const connection: TemporalConnection = {
     namespace: assertCfg('TEMPORAL_CONNECTION_NAMESPACE'),
@@ -154,9 +159,9 @@ const temporalCfg = await createTemporalCfg()
 const apiCfg: APIConfig = await createApiCfg()
 export const cfg: Config
     = {
-      Temporal: temporalCfg,
-      IsProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
-      API: apiCfg,
+      temporal: temporalCfg,
+      isProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
+      api: apiCfg,
     }
 
 function numOrNot(key: string): number | undefined {

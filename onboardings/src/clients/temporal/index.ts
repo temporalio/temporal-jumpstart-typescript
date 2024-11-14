@@ -31,21 +31,21 @@ const getConnectionOptions = (tcfg: TemporalConfig): ConnectionOptions => {
 }
 export const createConnection = async (tcfg?: TemporalConfig): Promise<Connection> => {
   if (!tcfg) {
-    tcfg = cfg.Temporal
+    tcfg = cfg.temporal
   }
   const connOpts: ConnectionOptions = getConnectionOptions(tcfg)
   return Connection.connect(connOpts)
 }
 export const createNativeConnection = async (tcfg?: TemporalConfig): Promise<NativeConnection> => {
   if (!tcfg) {
-    tcfg = cfg.Temporal
+    tcfg = cfg.temporal
   }
   const connOpts: ConnectionOptions = getConnectionOptions(tcfg)
   return NativeConnection.connect(connOpts)
 }
 export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   if (!tcfg) {
-    tcfg = cfg.Temporal
+    tcfg = cfg.temporal
   }
   return new Client({
     connection: await createConnection(tcfg),

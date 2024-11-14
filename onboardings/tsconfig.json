@@ -6,7 +6,10 @@
     "declarationMap": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "rootDirs": ["./src", "./scripts"],
+    "rootDirs": ["./src",
+      "./src/scripts"
+    ],
+    "resolveJsonModule": true,
     "outDir": "./build",
     "esModuleInterop": true,
     "paths": {
@@ -15,8 +18,8 @@
   },
   "include": [
     "eslint.config.js",
-    "scripts/**/*.ts",
+    "src/scripts/**/*.ts",
     "app/src/**/*.ts",
-    "src/**/*.ts",
+    "src/**/*.ts"
   ]
 }

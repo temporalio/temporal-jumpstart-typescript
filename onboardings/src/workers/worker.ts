@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
-  const { Temporal: tcfg } = cfg
+  const { temporal: tcfg } = cfg
 
   let connection
   try {
@@ -52,12 +52,12 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     // workflowThreadPoolSize: 0,
     // workflowsPath: '',
   }
-  if (!cfg.IsProduction) {
+  if (!cfg.isProduction) {
     workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
   }
   else {
     workerOpts.workflowBundle = {
-      codePath: 'build/workflows.bundle.js',
+      codePath: cfg.temporal.worker.bundlePath,
     }
   }
   return workerOpts
