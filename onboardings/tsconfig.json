@@ -6,7 +6,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "rootDir": ".",
+    "rootDirs": ["./src", "./scripts"],
     "outDir": "./build",
     "esModuleInterop": true,
     "paths": {

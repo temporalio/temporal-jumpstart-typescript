@@ -1,8 +1,8 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
-import tsEslint from 'typescript-eslint';
-import stylistic from '@stylistic/eslint-plugin';
+import globals from 'globals'
+import pluginJs from '@eslint/js'
+import importPlugin from 'eslint-plugin-import'
+import tsEslint from 'typescript-eslint'
+import stylistic from '@stylistic/eslint-plugin'
 
 // noinspection JSUnusedGlobalSymbols
 export default [
@@ -52,4 +52,4 @@ export default [
       '@stylistic/semi': 'error',
     },
   },
-];
+]

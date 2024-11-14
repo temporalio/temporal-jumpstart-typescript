@@ -1,15 +1,14 @@
 import { bundleWorkflowCode } from '@temporalio/worker'
 import { writeFile } from 'fs/promises'
-import path from 'path'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
+// https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules
 
 async function bundle() {
   const { code } = await bundleWorkflowCode({
-    workflowsPath: require.resolve('./onboardings/src/workflows'),
+    // workflowsPath: wf,
+    workflowsPath: import.meta.resolve('../src/workflows').replace('file://', ''),
     webpackConfigHook: (config) => {
       if (config.resolve) {
-        console.log('HOOKY', config)
-        // let tsConfigPaths = new TsconfigPathsPlugin({ configFile: 'tsconfig.json' })
         config.resolve.plugins = [
           ...(config.resolve.plugins ?? []),
           // new TsconfigPathsPlugin({baseUrl: path.dirname((config.entry as string[])[0]),  }) as any,
@@ -18,11 +17,10 @@ async function bundle() {
         ]
       }
       return config
-    }
+    },
   })
-  const codePath = path.join(__dirname, './workflow-bundle.js')
-
-  await writeFile(codePath, code)
+  const codePath = import.meta.resolve('../build/workflow-bundle.js')
+  await writeFile(codePath.replace('file://', ''), code)
   console.log(`Bundle written to ${codePath}`)
 }
 

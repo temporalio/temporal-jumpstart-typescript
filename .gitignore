@@ -155,3 +155,4 @@ onboardings/.env
 *.key
 
 generated
+build
