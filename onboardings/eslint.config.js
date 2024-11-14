@@ -28,7 +28,7 @@ export default [
       parserOptions: {
         projectService: {
           allowDefaultProject: ['*.js'],
-          defaultProject: 'BAKtsconfig.json',
+          defaultProject: 'tsconfig.json',
         },
         tsconfigRootDir: import.meta.dirname,
       },

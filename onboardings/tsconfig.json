@@ -10,13 +10,13 @@
     "outDir": "./build",
     "esModuleInterop": true,
     "paths": {
-        "@generated/*": ["./generated/*"]
+        "@generated/*": ["./src/generated/*"]
       }
   },
   "include": [
     "eslint.config.js",
     "scripts/**/*.ts",
     "app/src/**/*.ts",
-    "onboardings/src/**/*.ts",
+    "src/**/*.ts",
   ]
 }

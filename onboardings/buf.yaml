@@ -3,8 +3,7 @@ lint:
   use:
     - STANDARD
 modules:
-  - path: proto/temporal/onboardings
-    name: onboardings
+  - path: ../proto/temporal/onboardings
     lint:
       use:
         - STANDARD
