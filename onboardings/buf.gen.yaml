@@ -7,5 +7,5 @@ inputs:
 #      - node_modules
 plugins:
   - local: protoc-gen-es
-    opt: target=ts
+    # opt: target=ts
     out: src/generated

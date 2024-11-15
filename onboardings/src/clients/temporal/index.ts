@@ -52,6 +52,7 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   return new Client({
     connection: await createConnection(tcfg),
     namespace: tcfg.connection.namespace,
-    dataConverter: { payloadConverterPath: import.meta.resolve('./payload-converter.js').replace('file://', '') },
+    // dataConverter: { payloadConverterPath: import.meta.resolve('./payload-converter.js').replace('file://', '') },
+    // dataConverter: { payloadConverterPath: require.resolve('./buf-payload-converter')}
   })
 }

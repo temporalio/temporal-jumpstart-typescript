@@ -7,14 +7,17 @@ import path from 'path'
 
 async function bundle() {
   const { code } = await bundleWorkflowCode({
-    workflowsPath: import.meta.resolve('../workflows').replace('file://', ''),
+    // workflowsPath: import.meta.resolve('../workflows').replace('file://', ''),
+    workflowsPath: require.resolve('../workflows'),
     webpackConfigHook: (config) => {
       if (config.resolve) {
         // config.resolve.fullySpecified = false
         config.resolve.plugins = [
           ...(config.resolve.plugins ?? []),
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          new TsconfigPathsPlugin({ configFile: 'tsconfig.json' }),
+          // new TsconfigPathsPlugin({ configFile: 'tsconfig.json' }),
+          new TsconfigPathsPlugin({ baseUrl: path.dirname((config.entry as string[])[0]) }) as any,
+
         ]
       }
 
@@ -22,8 +25,9 @@ async function bundle() {
     },
   })
 
-  const codePath = import.meta.resolve(cfg.temporal.worker.bundlePath)
-  await writeFile(codePath.replace('file://', ''), code)
+  // const codePath = import.meta.resolve(cfg.temporal.worker.bundlePath).replace('file://', '')
+  const codePath = require.resolve(cfg.temporal.worker.bundlePath)
+  await writeFile(codePath, code)
   console.log(`Bundle written to ${codePath}`)
 }
 

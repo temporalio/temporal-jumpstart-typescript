@@ -1,5 +1,5 @@
 import dotenv from 'dotenv-extended'
-import fs from 'fs/promises'
+import fs from 'fs'
 import { URL } from 'node:url'
 import { getTsconfig} from './get-tsconfig.js'
 import path from 'path'
@@ -74,7 +74,7 @@ export interface PubSubConfig {
   url: URL
 }
 
-const createApiCfg = async (): Promise<APIConfig> => {
+const createApiCfg =  (): APIConfig => {
   const apiUrlEnv = process.env['API_URL']
   const apiUrl = new URL(apiUrlEnv || 'https://localhost:4000/api')
   const mtls: MTLSConfig = {
@@ -88,14 +88,14 @@ const createApiCfg = async (): Promise<APIConfig> => {
     serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
     serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE'],
   }
-  return Promise.resolve({
+  return {
     port: apiUrl.port,
     mtls,
     url: apiUrl,
-  })
+  }
 }
 
-const createTemporalCfg = async (): Promise<TemporalConfig> => {
+const createTemporalCfg = (): TemporalConfig => {
   const mtls: MTLSConfig = {
     certChainFile: process.env['TEMPORAL_CONNECTION_MTLS_CERT_CHAIN_FILE'],
     keyFile: process.env['TEMPORAL_CONNECTION_MTLS_KEY_FILE'],
@@ -111,20 +111,20 @@ const createTemporalCfg = async (): Promise<TemporalConfig> => {
     mtls.key = Buffer.from(process.env['TEMPORAL_CONNECTION_MTLS_KEY'])
   }
   else if (mtls.keyFile) {
-    mtls.key = await fs.readFile(mtls.keyFile)
+    mtls.key = fs.readFileSync(mtls.keyFile)
   }
   if (process.env['TEMPORAL_CONNECTION_MTLS_CERT_CHAIN']) {
     mtls.certChain = Buffer.from(process.env['TEMPORAL_CONNECTION_MTLS_CERT_CHAIN'])
   }
   else if (mtls.certChainFile) {
-    mtls.certChain = await fs.readFile(mtls.certChainFile)
+    mtls.certChain = fs.readFileSync(mtls.certChainFile)
   }
 
   if (process.env['TEMPORAL_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE']) {
     mtls.serverRootCACertificate = Buffer.from(process.env['TEMPORAL_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE'])
   }
   else if (mtls.serverRootCACertificateFile) {
-    mtls.serverRootCACertificate = Buffer.from(await fs.readFile(mtls.serverRootCACertificateFile))
+    mtls.serverRootCACertificate = Buffer.from(fs.readFileSync(mtls.serverRootCACertificateFile))
   }
 
   const worker: TemporalWorker = {
@@ -155,8 +155,8 @@ const createTemporalCfg = async (): Promise<TemporalConfig> => {
   }
 }
 
-const temporalCfg = await createTemporalCfg()
-const apiCfg: APIConfig = await createApiCfg()
+const temporalCfg = createTemporalCfg()
+const apiCfg: APIConfig = createApiCfg()
 export const cfg: Config
     = {
       temporal: temporalCfg,

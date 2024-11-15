@@ -3,11 +3,13 @@ import { cfg } from './config'
 
 import * as acts from './workflows/activities.js'
 
-const opts = await createWorkerOptions(cfg)
-opts.activities = acts
-const worker = await createWorker(opts)
+createWorkerOptions(cfg).then(opts => {
+  opts.activities = acts
+  return createWorker(opts).then(worker => {
+    return worker.run().catch((err) => {
+      console.error(err)
+      process.exit(1)
+    })
+  })
 
-await worker.run().catch((err) => {
-  console.error(err)
-  process.exit(1)
 })

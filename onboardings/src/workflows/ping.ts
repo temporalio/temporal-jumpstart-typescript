@@ -1,4 +1,4 @@
-import { PingRequest, PingResponse, PingResponseSchema } from '../generated/onboardings/domain/v0/workflows_pb.js'
+import { PingRequest, PingResponse, PingResponseSchema } from '../generated/onboardings/domain/v0/workflows_pb'
 
 import { log } from '@temporalio/workflow'
 import { create } from '@bufbuild/protobuf'
