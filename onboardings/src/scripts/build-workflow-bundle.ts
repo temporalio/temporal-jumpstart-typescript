@@ -1,7 +1,7 @@
 import { bundleWorkflowCode } from '@temporalio/worker'
 import { writeFile } from 'fs/promises'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
-import { cfg } from '../config/index.js'
+import { cfg } from '../config'
 import path from 'path'
 // https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules
 

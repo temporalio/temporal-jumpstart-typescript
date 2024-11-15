@@ -1,6 +1,6 @@
 import { Worker, type WorkerOptions } from '@temporalio/worker'
 import { createNativeConnection } from '../clients/temporal/index.js'
-import { Config } from '../config/index.js'
+import { Config } from '../config'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -60,6 +60,7 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
       codePath: cfg.temporal.worker.bundlePath,
     }
   }
+  workerOpts.dataConverter = { payloadConverterPath: import.meta.resolve('../clients/temporal/payload-converter.js').replace('file://', '') }
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {

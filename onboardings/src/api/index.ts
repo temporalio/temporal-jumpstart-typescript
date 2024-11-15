@@ -1,6 +1,6 @@
 import express, { Express } from 'express'
 // import {createClient} from '../clients/temporal/index.js'
-import { cfg } from '../config/index.js'
+import { cfg } from '../config'
 import fs from 'fs'
 import https from 'https'
 import cors from 'cors'

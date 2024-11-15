@@ -1,6 +1,7 @@
-import { cfg, type TemporalConfig } from '../../config/index.js'
+import { cfg, type TemporalConfig } from '../../config'
 import { Client, Connection } from '@temporalio/client'
 import { NativeConnection } from '@temporalio/worker'
+import { DefaultPayloadConverterWithProtobufs } from '@temporalio/common/lib/protobufs.js';
 
 interface ConnectionOptions {
   address: string
@@ -26,6 +27,7 @@ const getConnectionOptions = (tcfg: TemporalConfig): ConnectionOptions => {
       serverRootCACertificate: tcfg.connection.mtls.serverRootCACertificate,
     }
   }
+
   console.log('connection options', connOpts)
   return connOpts
 }
@@ -50,5 +52,6 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   return new Client({
     connection: await createConnection(tcfg),
     namespace: tcfg.connection.namespace,
+    dataConverter: { payloadConverterPath: import.meta.resolve('./payload-converter.js').replace('file://', '') },
   })
 }

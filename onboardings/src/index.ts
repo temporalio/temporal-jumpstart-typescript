@@ -1,5 +1,5 @@
 import { createWorker, createWorkerOptions } from './workers/worker.js'
-import { cfg } from './config/index.js'
+import { cfg } from './config'
 
 import * as acts from './workflows/activities.js'
 

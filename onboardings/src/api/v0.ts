@@ -1,8 +1,8 @@
 import express, { type Router, Request, Response, NextFunction } from 'express'
-import {type PingRequest, PingRequestSchema, PingResponse} from '@generated/onboardings/api/v0/api_pb.js'
+import {type PingRequest, PingRequestSchema, PingResponse} from '../generated/onboardings/api/v0/api_pb.js'
 import { fromJson, JsonObject, JsonValue } from '@bufbuild/protobuf'
 import { Clients } from '../clients/index.js'
-import { Config } from '../config/index.js'
+import { Config } from '../config'
 
 interface V0Dependencies {
   clients: Clients
@@ -24,7 +24,7 @@ export const createRouter = (deps: V0Dependencies) => {
     let result: PingResponse = await deps.clients.temporal.workflow.execute('ping', {
       taskQueue: 'apps',
       args: [{name: ping.name}],
-      workflowId: 'firstone',
+      workflowId: 'bleh',
     })
     console.log('res', result)
     res.send(result)
