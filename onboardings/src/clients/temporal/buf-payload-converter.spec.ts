@@ -11,92 +11,61 @@ import {
 import {Payload} from '@temporalio/common/lib'
 import {beforeEach} from 'mocha'
 import {readFile} from 'fs-extra'
+import {
+  SampleEnum,
+  SampleRequest,
+  SampleRequestSchema
+} from '@fixtures/generated/clients/temporal/buf-data-converter_pb'
+import path from 'path'
 const { assert } = require('chai')
 
 const { createFileRegistry, fromBinary } = require('@bufbuild/protobuf')
 const { FileDescriptSetSchema } = require('@bufbuild/protobuf/wkt')
-// const { addition } = require('./calculator')
 
 describe('buf payload converter specs', () => {
   let registry : Registry
   before(async () => {
     const fileDescriptorSet = fromBinary(
       FileDescriptorSetSchema,
-      await readFile('./fixtures/generated/clients/temporal/set.binpb'),
-    );
+      await readFile(path.resolve(__dirname,'../../../fixtures/generated/clients/temporal/set.binpb')))
     registry = createFileRegistry(fileDescriptorSet);
   })
-  it('should work', () => {
-    const fileDescriptorSet = fromBinary(
-      FileDescriptorSetSchema,
-      readFileSync('./descriptors.binpb'),
-    );
-    const registry = createFileRegistry(fileDescriptorSet);
-    for (const file of registry.files) {
-      //console.log('file', file.name);
-    }
-    for (const type of registry) {
-    //  console.log('type', type)
-      // type.kind; // 'message' | 'enum' | 'extension' | 'service'
-    }
-    let ping = create(PingRequestSchema, {
-      name: 'monkey'
-    })
 
-    let raw = JSON.stringify(ping)
-    console.log('bare json', raw)
-    console.log('isMessage', isMessage(ping))
-    let desc = registry.getMessage(ping.$typeName)
-    let json = toJsonString(desc, ping)
-    console.log('json', json)
-
-    let ping2 = fromJsonString(registry.getMessage('temporal.onboardings.workflows.v0.PingRequest'), json )
-    console.log('ping2', ping2)
-    // const result = addition(2, 3);
-    // assert.equal(5, 5);
-  });
   it('should support binary payloads', () => {
-    const fileDescriptorSet = fromBinary(
-      FileDescriptorSetSchema,
-      readFileSync('./descriptors.binpb'),
-    );
-    const registry = createFileRegistry(fileDescriptorSet);
     let sut = new BufBinaryPayloadConverter(registry)
-    let ping = create(PingRequestSchema, {
-      name: 'monkey'
+    let message = create(SampleRequestSchema, {
+      name: 'sample',
+      frequency: SampleEnum.ONCE,
     })
 
-    let payload = sut.toPayload(ping)
+    let payload = sut.toPayload(message)
     assert.isDefined(payload)
     // console.log('payload', payload)
     if(!payload) {
       assert.fail('payload must be defined')
     }
+    let received: SampleRequest = sut.fromPayload(payload as Payload)
 
-    let message: PingRequest = sut.fromPayload(payload as Payload)
-    assert.equal(message.name, ping.name)
-    console.log('message', message)
+    assert.equal(message.name, received.name)
+    assert.equal(message.frequency, received.frequency)
   })
   it('should support json payloads', () => {
-    const fileDescriptorSet = fromBinary(
-      FileDescriptorSetSchema,
-      readFileSync('./descriptors.binpb'),
-    );
-    const registry = createFileRegistry(fileDescriptorSet);
     let sut = new BufJsonPayloadConverter(registry)
-    let ping = create(PingRequestSchema, {
-      name: 'monkey'
+    let message = create(SampleRequestSchema, {
+      name: 'sample',
+      frequency: SampleEnum.ONCE,
     })
 
-    let payload = sut.toPayload(ping)
+    let payload = sut.toPayload(message)
     assert.isDefined(payload)
     // console.log('payload', payload)
     if(!payload) {
       assert.fail('payload must be defined')
     }
+    let received: SampleRequest = sut.fromPayload(payload as Payload)
 
-    let message: PingRequest = sut.fromPayload(payload as Payload)
-    assert.equal(message.name, ping.name)
-    console.log('message', message)
+    assert.equal(message.name, received.name)
+    assert.equal(message.frequency, received.frequency)
+
   })
 });

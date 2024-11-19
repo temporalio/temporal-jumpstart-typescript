@@ -4,9 +4,6 @@ import { Config } from '../config'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-// const __filename = fileURLToPath(import.meta.url)
-// const __dirname = path.dirname(__filename)
-
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
   const { temporal: tcfg } = cfg
 
@@ -60,7 +57,7 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
       codePath: cfg.temporal.worker.bundlePath,
     }
   }
-  // workerOpts.dataConverter = { payloadConverterPath: import.meta.resolve('../clients/temporal/payload-converter.js').replace('file://', '') }
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')) }
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {

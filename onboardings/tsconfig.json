@@ -15,7 +15,8 @@
     "outDir": "./build",
     "esModuleInterop": true,
     "paths": {
-        "@generated/*": ["./src/generated/*"]
+        "@generated/*": ["./src/generated/*"],
+        "@fixtures/*": ["./fixtures/*"]
       }
   },
   "include": [

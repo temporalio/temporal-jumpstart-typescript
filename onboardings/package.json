@@ -10,6 +10,7 @@
     "clean:fixtures": "rm -rf fixtures/generated && mkdir -p fixtures/generated/clients/temporal",
     "build:fixtures": "npm run clean:fixtures && buf build --config buf.test.yaml --output fixtures/generated/clients/temporal/set.binpb && buf generate --template buf.gen.test.yaml",
     "pretest": "npm run build:fixtures",
+    "proto": "buf generate --template buf.gen.yaml",
     "test": "mocha 'src/**/*.spec.*'",
     "build:workflowold": "tsc --build ./src/scripts/build-workflow-bundle.ts",
     "build:workflow": "tsx ./src/scripts/build-workflow-bundle.ts",

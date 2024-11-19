@@ -3,7 +3,7 @@ lint:
   use:
     - STANDARD
 modules:
-  - path: ../proto/temporal/test
+  - path: proto/temporal/test
     lint:
       use:
         - STANDARD

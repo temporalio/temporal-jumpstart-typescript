@@ -1,3 +1,12 @@
-import { ProtobufBinaryPayloadConverter } from '@temporalio/common/lib/protobufs.js'
+import {DefaultPayloadConverterWithBufs} from './buf-payload-converter'
+import {createFileRegistry, fromBinary} from '@bufbuild/protobuf'
+import {FileDescriptorSetSchema} from '@bufbuild/protobuf/wkt'
+import {readFileSync} from 'node:fs'
 
-export const payloadConverter = new ProtobufBinaryPayloadConverter()
+const registryPath = require.resolve('../../generated/onboardings/set.binpb')
+const fileDescriptorSet = fromBinary(
+  FileDescriptorSetSchema,
+  readFileSync(registryPath))
+
+const registry = createFileRegistry(fileDescriptorSet);
+export const payloadConverter = new DefaultPayloadConverterWithBufs({registry})

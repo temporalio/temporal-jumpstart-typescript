@@ -156,3 +156,4 @@ onboardings/.env
 
 generated
 build
+*.binpb

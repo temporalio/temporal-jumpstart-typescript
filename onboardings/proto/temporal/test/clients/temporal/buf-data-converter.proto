@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package temporal.test.clients.temporal;
+
+enum SampleEnum {
+  UNDEFINED = 0;
+  ONCE = 1;
+  TWICE = 2;
+}
+message SampleRequest {
+  string name = 1;
+  SampleEnum frequency = 2;
+}
+message SampleResponse {
+  string name = 1;
+  SampleEnum frequency = 2;
+}
