@@ -1,0 +1,12 @@
+version: v2
+lint:
+  use:
+    - STANDARD
+modules:
+  - path: ../proto/temporal/test
+    lint:
+      use:
+        - STANDARD
+    breaking:
+      use:
+        - FILE

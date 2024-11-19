@@ -1,6 +1,6 @@
 import {FileDescriptorSetSchema} from '@bufbuild/protobuf/wkt'
 import { readFileSync } from 'node:fs';
-import {create, fromJsonString, isMessage, toJsonString} from '@bufbuild/protobuf'
+import {create, fromJsonString, isMessage, Registry, toJsonString} from '@bufbuild/protobuf'
 import {PingRequestSchema} from '@generated/onboardings/domain/v0/workflows_pb'
 import { PingRequest} from '@generated/onboardings/domain/v0/workflows_pb'
 import {
@@ -9,17 +9,27 @@ import {
   DefaultPayloadConverterWithBufs
 } from './buf-payload-converter'
 import {Payload} from '@temporalio/common/lib'
+import {beforeEach} from 'mocha'
+import {readFile} from 'fs-extra'
 const { assert } = require('chai')
 
 const { createFileRegistry, fromBinary } = require('@bufbuild/protobuf')
 const { FileDescriptSetSchema } = require('@bufbuild/protobuf/wkt')
 // const { addition } = require('./calculator')
 
-describe("Registry Tests", () => {
-  it("should work", () => {
+describe('buf payload converter specs', () => {
+  let registry : Registry
+  before(async () => {
     const fileDescriptorSet = fromBinary(
       FileDescriptorSetSchema,
-      readFileSync("./descriptors.binpb"),
+      await readFile('./fixtures/generated/clients/temporal/set.binpb'),
+    );
+    registry = createFileRegistry(fileDescriptorSet);
+  })
+  it('should work', () => {
+    const fileDescriptorSet = fromBinary(
+      FileDescriptorSetSchema,
+      readFileSync('./descriptors.binpb'),
     );
     const registry = createFileRegistry(fileDescriptorSet);
     for (const file of registry.files) {
@@ -27,10 +37,10 @@ describe("Registry Tests", () => {
     }
     for (const type of registry) {
     //  console.log('type', type)
-      // type.kind; // "message" | "enum" | "extension" | "service"
+      // type.kind; // 'message' | 'enum' | 'extension' | 'service'
     }
     let ping = create(PingRequestSchema, {
-      name: "monkey"
+      name: 'monkey'
     })
 
     let raw = JSON.stringify(ping)
@@ -48,12 +58,12 @@ describe("Registry Tests", () => {
   it('should support binary payloads', () => {
     const fileDescriptorSet = fromBinary(
       FileDescriptorSetSchema,
-      readFileSync("./descriptors.binpb"),
+      readFileSync('./descriptors.binpb'),
     );
     const registry = createFileRegistry(fileDescriptorSet);
     let sut = new BufBinaryPayloadConverter(registry)
     let ping = create(PingRequestSchema, {
-      name: "monkey"
+      name: 'monkey'
     })
 
     let payload = sut.toPayload(ping)
@@ -70,12 +80,12 @@ describe("Registry Tests", () => {
   it('should support json payloads', () => {
     const fileDescriptorSet = fromBinary(
       FileDescriptorSetSchema,
-      readFileSync("./descriptors.binpb"),
+      readFileSync('./descriptors.binpb'),
     );
     const registry = createFileRegistry(fileDescriptorSet);
     let sut = new BufJsonPayloadConverter(registry)
     let ping = create(PingRequestSchema, {
-      name: "monkey"
+      name: 'monkey'
     })
 
     let payload = sut.toPayload(ping)
