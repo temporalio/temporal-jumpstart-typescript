@@ -2,8 +2,6 @@
   "extends": "@tsconfig/node21/tsconfig.json",
   "version": "4.4.2",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

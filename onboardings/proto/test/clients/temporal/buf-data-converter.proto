@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package temporal.test.clients.temporal;
+package test.clients.temporal;
 
 enum SampleEnum {
   UNDEFINED = 0;

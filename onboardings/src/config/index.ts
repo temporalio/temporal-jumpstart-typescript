@@ -157,8 +157,7 @@ const createTemporalCfg = (): TemporalConfig => {
 
 const temporalCfg = createTemporalCfg()
 const apiCfg: APIConfig = createApiCfg()
-export const cfg: Config
-    = {
+export const cfg: Config = {
       temporal: temporalCfg,
       isProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
       api: apiCfg,

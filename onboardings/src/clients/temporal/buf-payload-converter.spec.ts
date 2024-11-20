@@ -1,33 +1,25 @@
 import {FileDescriptorSetSchema} from '@bufbuild/protobuf/wkt'
-import { readFileSync } from 'node:fs';
-import {create, fromJsonString, isMessage, Registry, toJsonString} from '@bufbuild/protobuf'
-import {PingRequestSchema} from '@generated/onboardings/domain/v0/workflows_pb'
-import { PingRequest} from '@generated/onboardings/domain/v0/workflows_pb'
+import {create, fromJson, fromJsonString, Registry} from '@bufbuild/protobuf'
 import {
   BufBinaryPayloadConverter,
-  BufJsonPayloadConverter,
-  DefaultPayloadConverterWithBufs
+  BufJsonPayloadConverter
 } from './buf-payload-converter'
 import {Payload} from '@temporalio/common/lib'
-import {beforeEach} from 'mocha'
-import {readFile} from 'fs-extra'
 import {
   SampleEnum,
   SampleRequest,
   SampleRequestSchema
 } from '@fixtures/generated/clients/temporal/buf-data-converter_pb'
-import path from 'path'
 const { assert } = require('chai')
 
 const { createFileRegistry, fromBinary } = require('@bufbuild/protobuf')
-const { FileDescriptSetSchema } = require('@bufbuild/protobuf/wkt')
-
 describe('buf payload converter specs', () => {
   let registry : Registry
   before(async () => {
-    const fileDescriptorSet = fromBinary(
+    const json = require('../../../fixtures/generated/clients/temporal/set.json')
+    const fileDescriptorSet = fromJson(
       FileDescriptorSetSchema,
-      await readFile(path.resolve(__dirname,'../../../fixtures/generated/clients/temporal/set.binpb')))
+      json)
     registry = createFileRegistry(fileDescriptorSet);
   })
 

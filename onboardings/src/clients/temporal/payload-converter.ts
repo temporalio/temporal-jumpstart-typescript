@@ -1,12 +1,18 @@
-import {DefaultPayloadConverterWithBufs} from './buf-payload-converter'
-import {createFileRegistry, fromBinary} from '@bufbuild/protobuf'
+import {DefaultPayloadConverterWithBufs}  from './buf-payload-converter'
+import {createFileRegistry, fromJson} from  '@bufbuild/protobuf'
 import {FileDescriptorSetSchema} from '@bufbuild/protobuf/wkt'
-import {readFileSync} from 'node:fs'
 
-const registryPath = require.resolve('../../generated/onboardings/set.binpb')
-const fileDescriptorSet = fromBinary(
+import {readFileSync} from 'fs'
+import path from 'path'
+
+// const registryPath = path.resolve(__dirname, '../../generated/onboardings/set.binpb')
+// console.log('registryPath', registryPath)
+const json = require('../../generated/onboardings/set.json')
+const fileDescriptorSet = fromJson(
   FileDescriptorSetSchema,
-  readFileSync(registryPath))
-
+  json)
+  // readFileSync(registryPath))
 const registry = createFileRegistry(fileDescriptorSet);
+
 export const payloadConverter = new DefaultPayloadConverterWithBufs({registry})
+

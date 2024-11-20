@@ -1,7 +1,6 @@
 import { decode, encode } from '@temporalio/common/lib/encoding'
 import { PayloadConverterError, ValueError } from '@temporalio/common/lib/errors';
 import { Payload } from '@temporalio/common/lib';
-// import { errorMessage, hasOwnProperties, hasOwnProperty, isRecord } from '../type-helpers';
 
 import {
   BinaryPayloadConverter,
@@ -11,7 +10,6 @@ import {
   UndefinedPayloadConverter,
 } from '@temporalio/common/lib/converter/payload-converter';
 
-// import { encodingTypes, METADATA_ENCODING_KEY, METADATA_MESSAGE_TYPE_KEY } from './types';
 import {
   DescEnum,
   DescExtension,

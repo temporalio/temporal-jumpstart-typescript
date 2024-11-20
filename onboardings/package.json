@@ -6,18 +6,18 @@
     "doc": "docs"
   },
   "scripts": {
-    "build.watch": "tsc --build --watch",
     "clean:fixtures": "rm -rf fixtures/generated && mkdir -p fixtures/generated/clients/temporal",
-    "build:fixtures": "npm run clean:fixtures && buf build --config buf.test.yaml --output fixtures/generated/clients/temporal/set.binpb && buf generate --template buf.gen.test.yaml",
+    "build:fixtures": "buf generate --clean --config buf.test.yaml --output fixtures && buf build --as-file-descriptor-set --config buf.test.yaml --output fixtures/generated/clients/temporal/set.json",
     "pretest": "npm run build:fixtures",
-    "proto": "buf generate --template buf.gen.yaml",
     "test": "mocha 'src/**/*.spec.*'",
+    "build": "tsc --build",
+    "build.watch": "tsc --build --watch",
+    "build:proto": "buf generate --clean --config buf.yaml --output src && buf build --as-file-descriptor-set --config buf.yaml --output src/generated/clients/temporal/set.json",
     "build:workflowold": "tsc --build ./src/scripts/build-workflow-bundle.ts",
     "build:workflow": "tsx ./src/scripts/build-workflow-bundle.ts",
-    "build": "tcs --build",
-    "domain": "tsx ./src/index.ts",
+    "domain": "tsc --noEmit && tsx ./src/index.ts",
     "domain.watch": "tsx watch ./src/index.ts",
-    "api": "tsx ./src/api/index.ts",
+    "api": "tsc --noEmit && tsx ./src/api/index.ts",
     "update": "npm-check-updates -u && npm i"
   },
   "repository": {

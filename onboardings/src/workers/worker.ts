@@ -57,7 +57,7 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
       codePath: cfg.temporal.worker.bundlePath,
     }
   }
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')) }
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {
