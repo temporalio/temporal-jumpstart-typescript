@@ -3,11 +3,9 @@ import webpack  from 'webpack'
 import { createNativeConnection } from '../clients/temporal/index.js'
 import { Config } from '../config'
 import path from 'path'
-import { payloadConverter} from '../clients/temporal/payload-converter'
 
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
   const { temporal: tcfg } = cfg
-  console.log('converters', payloadConverter.converters)
   let connection
   try {
     connection = await createNativeConnection(tcfg)
@@ -72,12 +70,14 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     config.plugins = [
       ...(config.plugins ?? []),
       new webpack.ProvidePlugin({
-        'TextEncoder': 'clients/temporal/encoding-adapter',
-      })]
+        'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+        'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+      })
+    ]
     return config
   }
   // workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve('./payload-converter')}
 
   return workerOpts
 }

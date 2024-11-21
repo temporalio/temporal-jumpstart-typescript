@@ -1,8 +1,8 @@
-import {BufBinaryPayloadConverter, DefaultPayloadConverterWithBufs} from './buf-payload-converter'
+import {DefaultPayloadConverterWithBufs} from './buf-payload-converter'
 import { createFileRegistry, fromJson, JsonValue } from '@bufbuild/protobuf'
 import { FileDescriptorSetSchema } from '@bufbuild/protobuf/wkt'
 // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-unsafe-assignment
-import json from '../../generated/set.json'
+import json from '../generated/set.json'
 import {CompositePayloadConverter} from '@temporalio/common/lib/converter/payload-converter'
 console.log('set', json)
 

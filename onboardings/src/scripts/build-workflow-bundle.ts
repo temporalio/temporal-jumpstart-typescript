@@ -10,6 +10,7 @@ async function bundle() {
   const { code } = await bundleWorkflowCode({
     // workflowsPath: import.meta.resolve('../workflows').replace('file://', ''),
     workflowsPath: require.resolve('../workflows'),
+    payloadConverterPath: require.resolve('../clients/temporal/payload-converter.ts'),
     webpackConfigHook: (config) => {
       config.module = config.module || {}
       config.module.rules =[

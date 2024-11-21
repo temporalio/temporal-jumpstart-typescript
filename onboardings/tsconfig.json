@@ -15,7 +15,7 @@
     "paths": {
         "@generated/*": ["./src/generated/*"],
         "@fixtures/*": ["./fixtures/*"]
-      }
+      },
   },
   "include": [
     "eslint.config.cjs",

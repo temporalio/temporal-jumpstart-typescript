@@ -2,7 +2,6 @@ import { decode, encode } from '@temporalio/common/lib/encoding'
 import { PayloadConverterError, ValueError } from '@temporalio/common/lib/errors'
 import { Payload } from '@temporalio/common/lib'
 import {configureTextEncoding} from '@bufbuild/protobuf/wire'
-import TextEncodingAdapter from './encoding-adapter'
 import {
   BinaryPayloadConverter,
   CompositePayloadConverter,
