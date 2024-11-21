@@ -1,8 +1,6 @@
-const { cfg  } = require('../../config')
-import { TemporalConfig} from '../../config'
-import { Connection} from '@temporalio/client'
-import { Client} from '@temporalio/client'
-import { NativeConnection} from '@temporalio/worker'
+import { cfg, TemporalConfig } from '../../config'
+import { Connection, Client } from '@temporalio/client'
+import { NativeConnection } from '@temporalio/worker'
 
 interface ConnectionOptions {
   address: string
@@ -49,7 +47,7 @@ export const createNativeConnection = async (tcfg?: TemporalConfig): Promise<Nat
   return NativeConnection.connect(connOpts)
 }
 export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
-  let mustTcfg : TemporalConfig = cfg.temporal
+  let mustTcfg: TemporalConfig = cfg.temporal
   if (tcfg) {
     mustTcfg = tcfg
   }
@@ -57,6 +55,6 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   return new Client({
     connection: await createConnection(mustTcfg),
     namespace: mustTcfg.connection.namespace,
-    dataConverter: { payloadConverterPath: require.resolve('./payload-converter')}
+    dataConverter: { payloadConverterPath: require.resolve('./payload-converter') },
   })
 }

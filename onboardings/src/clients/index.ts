@@ -1,6 +1,6 @@
 import { Client } from '@temporalio/client'
 import { Config } from '../config'
-import { createClient } from './temporal/index.js'
+import { createClient } from './temporal'
 
 export interface Clients {
   temporal: Client

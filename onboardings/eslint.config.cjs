@@ -1,13 +1,16 @@
 import globals from 'globals'
-import pluginJs from '@eslint/js'
-import importPlugin from 'eslint-plugin-import'
-import tsEslint from 'typescript-eslint'
-import stylistic from '@stylistic/eslint-plugin'
 
+import pluginJs from '@eslint/js';
+
+import importPlugin from "eslint-plugin-import";
+
+import tsEslint from "typescript-eslint";
+
+import stylistic from "@stylistic/eslint-plugin";
 // noinspection JSUnusedGlobalSymbols
 export default [
   {
-    files: ['**/*.{js,mjs,cjs,ts}'],
+    files: ['**/*.{js,mjs,cjs,ts,json}'],
   },
   {
     languageOptions: { globals: globals.browser },
@@ -30,7 +33,7 @@ export default [
           allowDefaultProject: ['*.js'],
           defaultProject: 'tsconfig.json',
         },
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: '.',
       },
     },
   },

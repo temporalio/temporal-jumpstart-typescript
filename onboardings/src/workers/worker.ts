@@ -77,7 +77,7 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     return config
   }
   // workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../src/clients/temporal/payload-converter.ts')}
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
 
   return workerOpts
 }

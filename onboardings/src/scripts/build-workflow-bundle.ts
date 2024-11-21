@@ -3,6 +3,7 @@ import { writeFile } from 'fs/promises'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import { cfg } from '../config'
 import path from 'path'
+import webpack from 'webpack'
 // https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules
 
 async function bundle() {
@@ -14,6 +15,15 @@ async function bundle() {
       config.module.rules =[
         ...(config.module.rules || []),
         { test: /\.json$/, type: 'json' }
+      ]
+      config.plugins = [
+        ...(config.plugins ?? []),
+        new webpack.ProvidePlugin({
+          // 'TextEncoder': require.resolve('@temporalio/common/lib/encoding'),
+          // 'TextDecoder': require.resolve('@temporalio/common/lib/encoding'),
+          'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+          'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+        })
       ]
       if (config.resolve) {
         // config.resolve.fullySpecified = false

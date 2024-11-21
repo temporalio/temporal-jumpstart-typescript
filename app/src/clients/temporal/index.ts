@@ -1,4 +1,4 @@
-import { cfg, type TemporalConfig } from '../../config/index.js'
+import { cfg, type TemporalConfig } from '../../config'
 import { Client, Connection } from '@temporalio/client'
 import { NativeConnection } from '@temporalio/worker'
 

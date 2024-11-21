@@ -1,47 +1,43 @@
 import { decode, encode } from '@temporalio/common/lib/encoding'
-import { TextEncoder, TextDecoder } from '@temporalio/common/lib/encoding'
-import { PayloadConverterError, ValueError } from '@temporalio/common/lib/errors';
-import { Payload } from '@temporalio/common/lib';
+import { PayloadConverterError, ValueError } from '@temporalio/common/lib/errors'
+import { Payload } from '@temporalio/common/lib'
 import {configureTextEncoding} from '@bufbuild/protobuf/wire'
-import { TextEncodingAdapter} from './encoding-adapter'
+import TextEncodingAdapter from './encoding-adapter'
 import {
-  BinaryPayloadConverter,
   CompositePayloadConverter,
-  JsonPayloadConverter,
   PayloadConverterWithEncoding,
-  UndefinedPayloadConverter,
+
 } from '@temporalio/common/lib/converter/payload-converter';
 
 import {
-  DescEnum,
-  DescExtension,
-  DescField,
   DescMessage,
-  DescService,
   fromBinary, fromJsonString,
   isMessage, Message,
-  Registry, toBinary, toJson, toJsonString
+  Registry, toBinary, toJsonString,
 } from '@bufbuild/protobuf'
+import * as console from 'node:console'
 
-const GLOBAL_BUFFER = globalThis.constructor.constructor('return globalThis.Buffer')();
+const sym = Symbol.for("@bufbuild/protobuf/text-encoding")
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+const GLOBAL_BUFFER = globalThis.constructor.constructor('return globalThis.Buffer')()
 // const GLOBAL_ENCODER = globalThis.constructor.constructor('return globalThis.TextEncoder')();
 const encodingTypes = {
   METADATA_ENCODING_BUF_JSON : 'json/buf',
-  METADATA_ENCODING_BUF: 'binary/buf'
+  METADATA_ENCODING_BUF: 'binary/buf',
 }
 const METADATA_ENCODING_KEY = 'encoding'
 const METADATA_MESSAGE_TYPE_KEY = '$typeName'
 
 abstract class BufPayloadConverter implements PayloadConverterWithEncoding {
-  protected readonly registry: Registry;
-  public abstract encodingType: string;
+  protected readonly registry: Registry
+  public abstract encodingType: string
 
-  public abstract toPayload<T>(value: T): Payload | undefined;
-  public abstract fromPayload<T>(payload: Payload): T;
+  public abstract toPayload<T>(value: T): Payload | undefined
+  public abstract fromPayload<T>(payload: Payload): T
 
   // Don't use type Root here because root.d.ts doesn't export Root, so users would have to type assert
   constructor(registry: Registry) {
-      this.registry = registry;
+    this.registry = registry
   }
 
   protected validatePayload(content: Payload): { messageType: DescMessage; data: Uint8Array } {
@@ -56,9 +52,9 @@ abstract class BufPayloadConverter implements PayloadConverterWithEncoding {
       throw new PayloadConverterError('Unable to deserialize protobuf message without `registry` being provided');
     }
 
-    const messageTypeName = decode(content.metadata[METADATA_MESSAGE_TYPE_KEY]);
-    let messageType = this.registry.getMessage(messageTypeName);
-    if(!messageType) {
+    const messageTypeName = decode(content.metadata[METADATA_MESSAGE_TYPE_KEY])
+    const messageType = this.registry.getMessage(messageTypeName)
+    if (!messageType) {
       throw new PayloadConverterError(`Got a \`${messageTypeName}\` protobuf message but cannot find corresponding message class in \`registry\``)
     }
     return { messageType, data: content.data };
@@ -85,11 +81,10 @@ export class BufBinaryPayloadConverter extends BufPayloadConverter {
    * @param registry
    */
   constructor(registry: Registry) {
-    super(registry);
+    super(registry)
   }
 
   public toPayload(value: unknown): Payload | undefined {
-    setEncoderInGlobal()
     let out = tryToMessage(this.registry, value)
     if(!out) {
       return undefined
@@ -102,8 +97,6 @@ export class BufBinaryPayloadConverter extends BufPayloadConverter {
   }
 
   public fromPayload<T>(content: Payload): T {
-    require('inspector').open(9229, 'localhost', true);debugger;
-    setEncoderInGlobal()
     const { messageType, data } = this.validatePayload(content);
     console.log('fromPayload', messageType.typeName, 'data', data)
     // Wrap with Uint8Array from this context to ensure `instanceof` works
@@ -204,9 +197,6 @@ function resetBufferInGlobal(hasChanged: boolean): void {
 }
 
 function setEncoderInGlobal(): boolean {
-  const s:symbol = Symbol.for("@bufbuild/protobuf/text-encoding")
-  let t = (globalThis as any)
-  t[s] = new TextEncodingAdapter()
   configureTextEncoding(new TextEncodingAdapter())
 
   return true
@@ -250,7 +240,6 @@ export class DefaultPayloadConverterWithBufs extends CompositePayloadConverter {
     if(!registry) {
       throw new Error('registry is required')
     }
-    setEncoderInGlobal()
 
     // let backup = getTextEncoding()
     // throw new Error(backup)
