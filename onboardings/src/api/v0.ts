@@ -21,10 +21,11 @@ export const createRouter = (deps: V0Dependencies) => {
   })
   router.put('/:id', async (req: TypedRequestBody<JsonValue>, res: Response) => {
     const ping: PingRequest = fromJson(PingRequestSchema, req.body)
+    console.log('$typeName', ping.$typeName)
     let result: PingResponse = await deps.clients.temporal.workflow.execute('ping', {
       taskQueue: 'apps',
-      args: [{name: ping.name}],
-      workflowId: 'bleh',
+      args: [ping],
+      workflowId: 'bleh' + ping.name,
     })
     console.log('res', result)
     res.send(result)

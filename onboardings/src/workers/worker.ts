@@ -1,12 +1,13 @@
 import { Worker, type WorkerOptions } from '@temporalio/worker'
+import webpack  from 'webpack'
 import { createNativeConnection } from '../clients/temporal/index.js'
 import { Config } from '../config'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { payloadConverter} from '../clients/temporal/payload-converter'
 
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
   const { temporal: tcfg } = cfg
-
+  console.log('converters', payloadConverter.converters)
   let connection
   try {
     connection = await createNativeConnection(tcfg)
@@ -49,18 +50,39 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     // workflowThreadPoolSize: 0,
     // workflowsPath: '',
   }
+  workerOpts.debugMode = true
+
   if (!cfg.isProduction) {
     workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
   }
   else {
     workerOpts.workflowBundle = {
       codePath: cfg.temporal.worker.bundlePath,
+
     }
   }
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
+  workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
+  workerOpts.bundlerOptions.ignoreModules = [
+    ...(workerOpts.bundlerOptions.ignoreModules ?? []),
+    'inspector'
+  ]
+  workerOpts.bundlerOptions.webpackConfigHook = (config): webpack.Configuration => {
+    console.log('adding adapter')
+    config.cache = false
+    config.plugins = [
+      ...(config.plugins ?? []),
+      new webpack.ProvidePlugin({
+        'TextEncoder': 'clients/temporal/encoding-adapter',
+      })]
+    return config
+  }
+  // workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../src/clients/temporal/payload-converter.ts')}
+
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {
   console.log('opts', opts)
+  console.log('debug',opts.debugMode)
   return await Worker.create(opts)
 }

@@ -4,8 +4,6 @@ import { Connection} from '@temporalio/client'
 import { Client} from '@temporalio/client'
 import { NativeConnection} from '@temporalio/worker'
 
-const path = require('path')
-
 interface ConnectionOptions {
   address: string
   tls?: {
@@ -55,9 +53,6 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   if (tcfg) {
     mustTcfg = tcfg
   }
-
-  const registryPath = path.resolve(__dirname,'../../generated/onboardings/set.binpb')
-  console.log('registryPath', registryPath)
 
   return new Client({
     connection: await createConnection(mustTcfg),

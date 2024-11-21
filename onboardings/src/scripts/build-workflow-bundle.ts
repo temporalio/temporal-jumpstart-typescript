@@ -10,6 +10,11 @@ async function bundle() {
     // workflowsPath: import.meta.resolve('../workflows').replace('file://', ''),
     workflowsPath: require.resolve('../workflows'),
     webpackConfigHook: (config) => {
+      config.module = config.module || {}
+      config.module.rules =[
+        ...(config.module.rules || []),
+        { test: /\.json$/, type: 'json' }
+      ]
       if (config.resolve) {
         // config.resolve.fullySpecified = false
         config.resolve.plugins = [
