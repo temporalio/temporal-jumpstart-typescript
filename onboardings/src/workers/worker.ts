@@ -50,34 +50,30 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
   }
   workerOpts.debugMode = true
 
-  if (!cfg.isProduction) {
-    workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
-  }
-  else {
+  if (cfg.isProduction) {
     workerOpts.workflowBundle = {
       codePath: cfg.temporal.worker.bundlePath,
-
     }
   }
-  workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
-  workerOpts.bundlerOptions.ignoreModules = [
-    ...(workerOpts.bundlerOptions.ignoreModules ?? []),
-    'inspector'
-  ]
-  workerOpts.bundlerOptions.webpackConfigHook = (config): webpack.Configuration => {
-    console.log('adding adapter')
-    config.cache = false
-    config.plugins = [
-      ...(config.plugins ?? []),
-      new webpack.ProvidePlugin({
-        'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-      })
-    ]
-    return config
+  else {
+    workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
+    workerOpts.debugMode = true
+    workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
+
+    workerOpts.bundlerOptions.webpackConfigHook = (config): webpack.Configuration => {
+      config.cache = false
+      config.plugins = [
+        ...(config.plugins ?? []),
+        new webpack.ProvidePlugin({
+          'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+          'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+        })
+      ]
+      return config
+    }
   }
-  // workerOpts.dataConverter = { payloadConverterPath: require.resolve(path.resolve(__dirname,'../clients/temporal/payload-converter.ts'))}
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve('./payload-converter')}
+
+  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
 
   return workerOpts
 }
