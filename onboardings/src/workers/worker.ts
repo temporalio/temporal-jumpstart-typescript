@@ -55,26 +55,15 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     workerOpts.workflowBundle = {
       codePath: cfg.temporal.worker.bundlePath,
     }
+    // provide a path to the PayloadConverter you want to customize
+    // note that the instance of this will be loaded once per V8 context
+    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
   }
   else {
-    workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
-
-    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
-
+    workerOpts.workflowsPath = path.join(__dirname, '../domain/workflows/index.ts')
     workerOpts.debugMode = true
+    // use this to do any custom webpack tuning in dev
     workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
-
-    workerOpts.bundlerOptions.webpackConfigHook = (config): webpack.Configuration => {
-      config.cache = false
-      config.plugins = [
-        ...(config.plugins ?? []),
-        new webpack.ProvidePlugin({
-          // 'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-          // 'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        })
-      ]
-      return config
-    }
   }
 
   return workerOpts

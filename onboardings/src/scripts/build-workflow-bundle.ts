@@ -8,7 +8,8 @@ import webpack from 'webpack'
 
 async function bundle() {
   const { code } = await bundleWorkflowCode({
-    workflowsPath: require.resolve('../workflows'),
+    workflowsPath: require.resolve('../domain/workflows'),
+    // this shows how to provide your own custom payload converter for production
     payloadConverterPath: require.resolve('../clients/temporal/payload-converter.ts'),
     webpackConfigHook: (config) => {
       config.module = config.module || {}
@@ -17,20 +18,12 @@ async function bundle() {
         ...(config.module.rules || []),
         { test: /\.json$/, type: 'json' }
       ]
-      config.plugins = [
-        ...(config.plugins ?? []),
-        // new webpack.ProvidePlugin({
-        //   'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        //   'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        // })
-      ]
       if (config.resolve) {
         config.resolve.plugins = [
           ...(config.resolve.plugins ?? []),
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           // new TsconfigPathsPlugin({ configFile: 'tsconfig.json' }),
           new TsconfigPathsPlugin({ baseUrl: path.dirname((config.entry as string[])[0]) }) as any,
-
         ]
       }
 

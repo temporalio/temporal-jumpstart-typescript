@@ -1,34 +1,31 @@
 import express, { type Router, Request, Response, NextFunction } from 'express'
-import {type PingRequest, PingRequestSchema, PingResponse} from '../generated/onboardings/api/v0/api_pb.js'
-import { fromJson, JsonObject, JsonValue } from '@bufbuild/protobuf'
-import { Clients } from '../clients/index.js'
+import { Clients } from '../clients'
 import { Config } from '../config'
+import {TypedRequestBody} from './typed-request-body'
+import {PingRequest, PingResponse} from './messages/v0'
 
 interface V0Dependencies {
   clients: Clients
   config: Config
 }
-export interface TypedRequestBody<T> extends Express.Request {
-  body: T
-}
+
 export const createRouter = (deps: V0Dependencies) => {
   const router: Router = express.Router()
-  router.get('/:id', (req: TypedRequestBody<JsonValue>, res: Response) => {
-    const ping: PingRequest = fromJson(PingRequestSchema, req.body)
-    console.log('ing', ping)
-    res.send('foo')
+  router.get('/:id', (req: TypedRequestBody<PingRequest>, res: Response) => {
+
+    console.log('ing', req.body)
+    res.send(JSON.stringify(req.body))
     // next()
   })
-  router.put('/:id', async (req: TypedRequestBody<JsonValue>, res: Response) => {
-    const ping: PingRequest = fromJson(PingRequestSchema, req.body)
-    console.log('$typeName', ping.$typeName)
+  router.put('/:id', async (req: TypedRequestBody<PingRequest>, res: Response) => {
+    const ping: PingRequest = req.body
     let result: PingResponse = await deps.clients.temporal.workflow.execute('ping', {
       taskQueue: 'apps',
       args: [ping],
-      workflowId: 'bleh' + ping.name,
+      workflowId: 'bleh' + ping.value,
     })
-    console.log('res', result)
-    res.send(result)
+    console.log('res', ping)
+    res.send(JSON.stringify(result))
     // next()
   })
   return router

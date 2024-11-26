@@ -7,13 +7,11 @@
   },
   "scripts": {
     "clean:fixtures": "rm -rf fixtures/generated && mkdir -p fixtures/generated/clients/temporal",
-    "build:fixtures": "buf generate --clean --config buf.test.yaml --output fixtures && buf build --as-file-descriptor-set --config buf.test.yaml --output fixtures/generated/clients/temporal/set.json",
+    "build:fixtures": "echo 'no fixtures used'",
     "pretest": "npm run build:fixtures",
     "test": "mocha 'src/**/*.spec.*'",
     "build": "tsc --build",
     "build.watch": "tsc --build --watch",
-    "build:proto": "buf generate --clean --config buf.yaml --output src && buf build --as-file-descriptor-set --config buf.yaml --output src/generated/set.json",
-    "build:workflowold": "tsc --build ./src/scripts/build-workflow-bundle.ts",
     "build:workflow": "tsx ./src/scripts/build-workflow-bundle.ts",
     "domain": "tsc --noEmit && tsx ./src/index.ts",
     "domain.watch": "tsx watch ./src/index.ts",
@@ -46,9 +44,6 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.47.2",
-    "@bufbuild/protobuf": "^2.2.2",
-    "@bufbuild/protoc-gen-es": "^2.2.2",
     "@eslint/js": "^9.15.0",
     "@stylistic/eslint-plugin": "^2.11.0",
     "@stylistic/eslint-plugin-js": "^2.11.0",
