@@ -17,13 +17,6 @@ async function bundle() {
         ...(config.module.rules || []),
         { test: /\.json$/, type: 'json' }
       ]
-      config.plugins = [
-        ...(config.plugins ?? []),
-        // new webpack.ProvidePlugin({
-        //   'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        //   'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        // })
-      ]
       if (config.resolve) {
         config.resolve.plugins = [
           ...(config.resolve.plugins ?? []),

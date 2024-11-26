@@ -142,7 +142,7 @@ export class BufJsonPayloadConverter extends BufPayloadConverter {
   }
 
   public fromPayload<T>(content: Payload): T {
-    console.log('buf-json:toPayload', content)
+    console.log('buf-json:fromPayload', content)
 
     const hasBufferChanged = setBufferInGlobal();
     try {

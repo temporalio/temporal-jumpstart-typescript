@@ -63,18 +63,6 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
 
     workerOpts.debugMode = true
     workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
-
-    workerOpts.bundlerOptions.webpackConfigHook = (config): webpack.Configuration => {
-      config.cache = false
-      config.plugins = [
-        ...(config.plugins ?? []),
-        new webpack.ProvidePlugin({
-          // 'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-          // 'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-        })
-      ]
-      return config
-    }
   }
 
   return workerOpts
