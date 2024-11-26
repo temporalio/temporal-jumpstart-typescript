@@ -1,10 +1,11 @@
-import { Worker, type WorkerOptions } from '@temporalio/worker'
+import {DefaultLogger, Runtime, Worker, type WorkerOptions} from '@temporalio/worker'
 import webpack  from 'webpack'
-import { createNativeConnection } from '../clients/temporal/index.js'
+import { createNativeConnection } from '../clients/temporal'
 import { Config } from '../config'
 import path from 'path'
 
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
+
   const { temporal: tcfg } = cfg
   let connection
   try {
@@ -57,6 +58,9 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
   }
   else {
     workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
+
+    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
+
     workerOpts.debugMode = true
     workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
 
@@ -65,20 +69,18 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
       config.plugins = [
         ...(config.plugins ?? []),
         new webpack.ProvidePlugin({
-          'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
-          'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+          // 'globalThis.TextEncoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
+          // 'globalThis.TextDecoder': [require.resolve('../clients/temporal/encoding-adapter.ts'), 'default'],
         })
       ]
       return config
     }
   }
 
-  workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
-
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {
-  console.log('opts', opts)
-  console.log('debug',opts.debugMode)
-  return await Worker.create(opts)
+
+  const w = await Worker.create(opts)
+  return w
 }

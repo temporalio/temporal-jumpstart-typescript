@@ -1,11 +1,10 @@
 import { decode, encode } from '@temporalio/common/lib/encoding'
 import { PayloadConverterError, ValueError } from '@temporalio/common/lib/errors'
 import { Payload } from '@temporalio/common/lib'
-import {configureTextEncoding} from '@bufbuild/protobuf/wire'
-import TextEncodingAdapter from './encoding-adapter'
 import {
   BinaryPayloadConverter,
   CompositePayloadConverter,
+  JsonPayloadConverter,
   PayloadConverterWithEncoding,
   UndefinedPayloadConverter,
 
@@ -21,7 +20,7 @@ import {
 const sym = Symbol.for("@bufbuild/protobuf/text-encoding")
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
 const GLOBAL_BUFFER = globalThis.constructor.constructor('return globalThis.Buffer')()
-// const GLOBAL_ENCODER = globalThis.constructor.constructor('return globalThis.TextEncoder')();
+
 const encodingTypes = {
   METADATA_ENCODING_BUF_JSON : 'json/buf',
   METADATA_ENCODING_BUF: 'binary/buf',
@@ -39,6 +38,7 @@ abstract class BufPayloadConverter implements PayloadConverterWithEncoding {
   // Don't use type Root here because root.d.ts doesn't export Root, so users would have to type assert
   constructor(registry: Registry) {
     this.registry = registry
+
   }
 
   protected validatePayload(content: Payload): { messageType: DescMessage; data: Uint8Array } {
@@ -86,6 +86,7 @@ export class BufBinaryPayloadConverter extends BufPayloadConverter {
   }
 
   public toPayload(value: unknown): Payload | undefined {
+    console.log('buf-bin|toPayload', value)
     let out = tryToMessage(this.registry, value)
     if(!out) {
       return undefined
@@ -98,17 +99,12 @@ export class BufBinaryPayloadConverter extends BufPayloadConverter {
   }
 
   public fromPayload<T>(content: Payload): T {
+    console.log('buf-bin|fromPayload', content)
+
     const { messageType, data } = this.validatePayload(content);
-    console.log('fromPayload', messageType.typeName, 'data', data)
     // Wrap with Uint8Array from this context to ensure `instanceof` works
     const localData = data ? new Uint8Array(data.buffer, data.byteOffset, data.length) : data;
-    let o = decode(localData)
-    console.log('HERE IS THE OH', o)
-
-    let out = fromBinary(messageType, localData) as unknown as T;
-    console.log('deserialized', out)
-    return out
-    // return messageType.decode(localData) as unknown as T;
+    return fromBinary(messageType, localData) as unknown as T;
   }
 }
 
@@ -126,6 +122,7 @@ export class BufJsonPayloadConverter extends BufPayloadConverter {
   }
 
   public toPayload(value: unknown): Payload | undefined {
+    console.log('buf-json|toPayload', value)
     let out = tryToMessage(this.registry, value)
     if (!out) {
       return undefined;
@@ -145,6 +142,8 @@ export class BufJsonPayloadConverter extends BufPayloadConverter {
   }
 
   public fromPayload<T>(content: Payload): T {
+    console.log('buf-json:toPayload', content)
+
     const hasBufferChanged = setBufferInGlobal();
     try {
       const { messageType, data } = this.validatePayload(content);
@@ -225,17 +224,12 @@ export class DefaultPayloadConverterWithBufs extends CompositePayloadConverter {
     if(!registry) {
       throw new Error('registry is required')
     }
-
-    // let backup = getTextEncoding()
-    // throw new Error(backup)
-    // console.log('encoding', backup)
-    // configureTextEncoding(getTextEncoding())
     super(
       new UndefinedPayloadConverter(),
       new BinaryPayloadConverter(),
-      // new BufJsonPayloadConverter(registry),
+      new BufJsonPayloadConverter(registry),
       new BufBinaryPayloadConverter(registry),
-      // new JsonPayloadConverter()
+      new JsonPayloadConverter()
     );
   }
 }
