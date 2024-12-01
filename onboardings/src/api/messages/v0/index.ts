@@ -4,3 +4,8 @@ export type PingRequest = {
 export type PingResponse = {
   value: string
 }
+
+export type OnboardingsPut = {
+  id: string
+  value: string
+}

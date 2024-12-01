@@ -4,3 +4,8 @@ export type PingRequest = {
 export type PingResponse = {
   value: string
 }
+
+export type OnboardEntityRequest = {
+  id: string
+  value: string
+}
