@@ -76,7 +76,7 @@ describe('OnboardingsAPI', async () => {
       temporalClient,
     }
   }
-  describe('starting an onboarding works', async () => {
+  describe('starting an entity onboarding works', async () => {
     it('should accept the entity onboarding request and provide resource location#state', async () => {
       const args: OnboardingsPut = {
         id: crypto.randomBytes(16).toString('hex'),
@@ -108,7 +108,7 @@ describe('OnboardingsAPI', async () => {
       let cmd:OnboardEntityRequest = {...args}
       mockWf.expects('start')
         .withExactArgs(WORKFLOW_TYPE, {
-          // a subtle source of bugs are misteaken task queue assignments in starters
+          // A subtle source of bugs are incorrect task queue assignments in starters
           // the Worker will never pick up the task!
           taskQueue,
           args: [cmd],
@@ -128,4 +128,5 @@ describe('OnboardingsAPI', async () => {
       mockWf.verify()
     })
   })
+
 })
