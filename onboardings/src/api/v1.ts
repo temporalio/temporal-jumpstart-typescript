@@ -7,13 +7,14 @@ import {OnboardEntityRequest} from '../domain/messages/v0'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {defaultPayloadConverter} from '@temporalio/worker'
 
-interface V0Dependencies {
+interface V1Dependencies {
   clients: Clients
   config: Config
 }
-export const WORKFLOW_TYPE = 'WorkflowDefinitionDoesntExistYet'
 
-export const createRouter = (deps: V0Dependencies) => {
+type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
+async function onboardEntity(params: OnboardEntityRequest) {}
+export const createRouter = (deps: V1Dependencies) => {
   const router: Router = express.Router()
   router.get('/onboardings/:id', async (req, res) => {
     const workflowId = req.params.id
@@ -38,8 +39,13 @@ export const createRouter = (deps: V0Dependencies) => {
     res.json(body)
   })
   router.put('/onboardings/:id', async (req:TypedRequestBody<OnboardingsPut>, res: Response) => {
+
     let cmd:OnboardEntityRequest = {...req.body}
-    let wfExec = await deps.clients.temporal.workflow.start(WORKFLOW_TYPE, {
+    console.log('fnName', onboardEntity.name)
+    const toFun<T>():string {
+
+    }
+    let wfExec = await deps.clients.temporal.workflow.start<OnboardEntity>(onboardEntity.name, {
       taskQueue: deps.config.temporal.worker.taskQueue,
       args: [cmd],
       workflowId: `${cmd.id}`,

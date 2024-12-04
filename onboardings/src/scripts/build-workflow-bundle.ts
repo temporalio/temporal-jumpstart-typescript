@@ -8,16 +8,19 @@ import webpack from 'webpack'
 
 async function bundle() {
   const { code } = await bundleWorkflowCode({
+
     workflowsPath: require.resolve('../domain/workflows'),
     // this shows how to provide your own custom payload converter for production
     payloadConverterPath: require.resolve('../clients/temporal/payload-converter.ts'),
     webpackConfigHook: (config) => {
       config.module = config.module || {}
       config.cache = false
+
       config.module.rules =[
         ...(config.module.rules || []),
         { test: /\.json$/, type: 'json' }
       ]
+
       if (config.resolve) {
         config.resolve.plugins = [
           ...(config.resolve.plugins ?? []),
