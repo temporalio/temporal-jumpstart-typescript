@@ -1,0 +1,27 @@
+{
+  "extends": "@tsconfig/node21/tsconfig.json",
+  "version": "4.4.2",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "rootDirs": ["./src",
+      "./src/scripts"
+    ],
+    "resolveJsonModule": true,
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "paths": {
+        "@generated/*": ["./src/generated/*"],
+        "@fixtures/*": ["./fixtures/*"]
+      },
+  },
+  "include": [
+    "eslint.config.cjs",
+    "src/scripts/**/*.ts",
+    "app/src/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.json"
+  ]
+}
