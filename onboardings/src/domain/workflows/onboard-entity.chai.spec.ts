@@ -7,6 +7,7 @@ import crypto from 'crypto'
 import {WorkflowFailedError} from '@temporalio/client'
 require('../../test/setup.mjs')
 const { expect } = require('chai')
+// this suite shows how to use some advanced chaijs fluent assertions
 describe('OnboardEntity.chai', function() {
   describe('given bad arguments', function() {
     let testEnv: TestWorkflowEnvironment
@@ -31,7 +32,7 @@ describe('OnboardEntity.chai', function() {
       })
       const args: OnboardEntityRequest = {
         id: crypto.randomBytes(16).toString('hex'),
-        value: crypto.randomBytes(16).toString('hex'),
+        value: ' ',
       }
       await expect((async () => {
         await worker.runUntil(async () => {

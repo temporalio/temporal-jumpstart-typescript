@@ -27,13 +27,13 @@ describe('OnboardEntity', function() {
         connection: nativeConnection,
         taskQueue,
         workflowsPath: require.resolve('./onboard-entity'),
-        // activities,
       })
       const args: OnboardEntityRequest = {
         id: crypto.randomBytes(16).toString('hex'),
-        value: crypto.randomBytes(16).toString('hex'),
+        value: '  ',
       }
-      const run = async() => {
+
+      await assert.rejects(async() => {
         await worker.runUntil(async () => {
           await client.workflow.execute(onboardEntity, {
             taskQueue,
@@ -41,15 +41,11 @@ describe('OnboardEntity', function() {
             args: [args],
           })
         })
-      }
-
-      await assert.rejects(run, function(e:any): e is string {
+      }, function(e:any): e is string {
         return e.cause instanceof ApplicationFailure && (e.cause as ApplicationFailure).type == ERR_INVALID_ARGS
       }, 'failed to receive correct error')
-      console.log('AFTER WORKER STARTED', worker.getStatus())
     })
     after(async function () {
-      console.log('AFTER HOOK')
       testEnv?.teardown()
     })
   })
