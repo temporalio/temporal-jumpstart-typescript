@@ -3,10 +3,11 @@ import crypto from 'crypto'
 import {OnboardingsPut} from './messages/v0'
 import {Client, WorkflowClient} from '@temporalio/client'
 import express, {Express, Response} from 'express'
-import {OnboardEntityRequest} from '../domain/messages/v0'
+import {OnboardEntityRequest} from '../domain/messages/workflows/v0'
 import {Config} from '../config'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {createCfg, createTemporalClient} from '../test/utils'
+import {onboardEntity, OnboardEntity} from '../domain/workflows/onboard-entity'
 const { expect } =require('chai')
 const sinon = require('sinon')
 const request = require('supertest')
@@ -52,8 +53,8 @@ describe('OnboardingsAPI#v1', async () => {
         .put(`/onboardings/${args.id}`)
         .set('Content-Type', 'application/json')
         .send(args)
-      expect(res.get('location')).eq(`./${args.id}`)
-      expect(res.status).eq(202)
+      await expect(res.get('location')).eq(`./${args.id}`)
+      await expect(res.status).eq(202)
 
     })
     it('should start entity onboarding#behavior', async () => {
@@ -68,8 +69,12 @@ describe('OnboardingsAPI#v1', async () => {
       const wf = new WorkflowClient()
       const mockWf = sinon.mock(wf)
       let cmd:OnboardEntityRequest = {...args}
+      type badFunc = () => Promise<void>
       mockWf.expects('start')
-        .withArgs('onboardEntity', {
+        // use sinon's custom matcher to specify the implementation being "started"
+        .withArgs(sinon.match(function(fn:any)  {
+          return typeof(fn) == 'function' && fn?.name == onboardEntity.name
+        }), {
           // A subtle source of bugs are incorrect task queue assignments in starters
           // the Worker will never pick up the task!
           taskQueue,
