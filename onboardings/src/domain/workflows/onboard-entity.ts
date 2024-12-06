@@ -1,10 +1,24 @@
 import {OnboardEntityRequest} from '../messages/workflows/v0'
-import {ApplicationFailure, defineQuery, defineSignal, WorkflowError, workflowInfo} from '@temporalio/workflow';
+import {
+  ApplicationFailure,
+  condition,
+  defineQuery,
+  defineSignal,
+  proxyActivities,
+  setHandler
+} from '@temporalio/workflow';
 import {EntityOnboardingState} from '../messages/queries/v0'
 import * as proto from '@temporalio/proto/protos/root'
 import {ApproveEntityRequest} from '../messages/commands/v0'
+import {ApprovalStatus} from '../messages/values/v0'
+import type { createIntegrationsHandlers }  from '../integrations'
+
+const { registerCrmEntity } = proxyActivities<ReturnType<typeof createIntegrationsHandlers>>({
+  startToCloseTimeout: '5 seconds'
+})
 export const queryGetState = defineQuery<EntityOnboardingState>('getState');
 export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
+
 export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
 export const ERR_INVALID_ARGS = 'InvalidArgs'
 
@@ -32,11 +46,23 @@ async function assertValidParams(params: OnboardEntityRequest) {
 }
 export const onboardEntity:OnboardEntity = async (params: OnboardEntityRequest ):Promise<void> => {
   let state:EntityOnboardingState = {
-    id: '',
+    id: params.id,
     status:  proto.temporal.api.enums.v1.WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_RUNNING.toString(),
     sentRequest: params,
+    approval: { status: ApprovalStatus.PENDING, comment: ''}
   }
-
   await assertValidParams(params)
+  setHandler(queryGetState, () => state)
+  setHandler(signalApprove, (cmd: ApproveEntityRequest) => {
+    state.approval = { status: ApprovalStatus.APPROVED, comment: cmd.comment }
+  })
+  let conditionMet = await condition(() => state.approval.status != ApprovalStatus.PENDING, '10 seconds' )
+  if(!conditionMet) {
+    throw ApplicationFailure.create({ type: 'denied'})
+  }
+  if(state.approval.status != ApprovalStatus.APPROVED) {
+    return
+  }
+  await registerCrmEntity({ id: params.id, value: params.value})
 
 }

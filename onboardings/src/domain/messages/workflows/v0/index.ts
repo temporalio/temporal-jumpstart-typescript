@@ -8,4 +8,7 @@ export type PingResponse = {
 export type OnboardEntityRequest = {
   id: string
   value: string
+  completionTimeoutSeconds: number
+  deputyOwnerEmail?: string
+  skipApproval: boolean
 }
