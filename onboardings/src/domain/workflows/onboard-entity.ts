@@ -3,7 +3,7 @@ import {
   ApplicationFailure,
   condition,
   defineQuery,
-  defineSignal,
+  defineSignal, log,
   proxyActivities,
   setHandler
 } from '@temporalio/workflow';
@@ -22,36 +22,22 @@ export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
 export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
 export const ERR_INVALID_ARGS = 'InvalidArgs'
 
-async function assertValidParams(params: OnboardEntityRequest) {
-  // poor man's validator
-  /*
-   * Temporal is not prescriptive about the strategy you choose for indicating failures in your Workflows.
-   *
-   * We throw an ApplicationFailureException here which would ultimately result in a `WorkflowFailedException`.
-   * This is a common way to fail a Workflow which will never succeed due to bad arguments or some other invariant.
-   *
-   * It is common to use ApplicationFailure for business failures, but these should be considered distinct from an intermittent failure such as
-   * a bug in the code or some dependency which is temporarily unavailable. Temporal can often recover from these kinds of intermittent failures
-   * with a redeployment, downstream service correction, etc. These intermittent failures would typically result in an Exception NOT descended from
-   * TemporalFailure and would therefore NOT fail the Workflow Execution.
-   *
-   * If you have explicit business metrics setup to monitor failed Workflows, you could alternatively return a "Status" result with the business failure
-   * and allow the Workflow Execution to "Complete" without failure.
-   *
-   * Note that `WorkflowFailedException` will count towards the `workflow_failed` SDK Metric (https://docs.temporal.io/references/sdk-metrics#workflow_failed).
-   */
-  if(!params.id.trim() || !params.value.trim()) {
+async function assertValidArgs(args: OnboardEntityRequest) {
+  if(!args.id.trim() || !args.value.trim()) {
     throw ApplicationFailure.create({ type: ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
   }
 }
-export const onboardEntity:OnboardEntity = async (params: OnboardEntityRequest ):Promise<void> => {
+
+export const workflowsPath = require.resolve(__filename)
+export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):Promise<void> => {
   let state:EntityOnboardingState = {
-    id: params.id,
+    id: args.id,
     status:  proto.temporal.api.enums.v1.WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_RUNNING.toString(),
-    sentRequest: params,
+    sentRequest: args,
     approval: { status: ApprovalStatus.PENDING, comment: ''}
   }
-  await assertValidParams(params)
+  log.info('HI FROM LATESt')
+  await assertValidArgs(args)
   setHandler(queryGetState, () => state)
   setHandler(signalApprove, (cmd: ApproveEntityRequest) => {
     state.approval = { status: ApprovalStatus.APPROVED, comment: cmd.comment }
@@ -63,6 +49,6 @@ export const onboardEntity:OnboardEntity = async (params: OnboardEntityRequest )
   if(state.approval.status != ApprovalStatus.APPROVED) {
     return
   }
-  await registerCrmEntity({ id: params.id, value: params.value})
+  await registerCrmEntity({ id: args.id, value: args.value})
 
 }

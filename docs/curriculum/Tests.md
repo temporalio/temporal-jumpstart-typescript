@@ -96,6 +96,8 @@ This curriculum primarily uses [mocha](https://mochajs.org/#getting-started) wit
 There is an example of using [chai](https://www.chaijs.com/api/) with its [chai-as-promised plugin](https://www.npmjs.com/package/chai-as-promised) if 
 fluent BDD is your style.
 
+TestDouble support is done in this curriculum with [sinon](https://sinonjs.org/releases/v19/).
+
 Note that Mocha prescribes:
 * Not to use [lambda functions](https://mochajs.org/#arrow-functions) for the callbacks that comprise your test. Use `function` instead.
 * Not to use `async` [`describe`](https://mochajs.org/#limitations-of-asynchronous-callbacks).
