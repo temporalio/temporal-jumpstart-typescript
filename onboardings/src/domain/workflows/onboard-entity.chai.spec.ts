@@ -1,8 +1,8 @@
 import { TestWorkflowEnvironment } from '@temporalio/testing';
 import { before, describe, it } from 'mocha';
 import { Worker } from '@temporalio/worker';
-import {ERR_INVALID_ARGS, onboardEntity} from './onboard-entity'
-import {OnboardEntityRequest} from '../messages/workflows/v0'
+import {onboardEntity} from './onboard-entity'
+import {Errors, OnboardEntityRequest} from '../messages/workflows/v0'
 import crypto from 'crypto'
 import {WorkflowFailedError} from '@temporalio/client'
 require('../../test/setup.mjs')
@@ -41,7 +41,7 @@ describe('OnboardEntity.chai', function() {
             workflowId: 'foo',
             args: [args],
           })
-      })})()).to.eventually.be.rejectedWith(WorkflowFailedError).and.have.property('cause').that.has.property('type', ERR_INVALID_ARGS)
+      })})()).to.eventually.be.rejectedWith(WorkflowFailedError).and.have.property('cause').that.has.property('type', Errors.ERR_INVALID_ARGS)
 
     })
     after(async function () {

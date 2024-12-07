@@ -1,7 +1,6 @@
 import {OnboardEntityRequest} from '../messages/workflows/v0'
 import {
   ApplicationFailure,
-  condition,
   defineQuery,
   defineSignal,
   proxyActivities,

@@ -1,17 +1,18 @@
-import {OnboardEntityRequest} from '../messages/workflows/v0'
+import {Errors, OnboardEntityRequest} from '../messages/workflows/v1'
 import {
   ApplicationFailure,
   condition,
   defineQuery,
-  defineSignal, log,
+  defineSignal,
+  log,
   proxyActivities,
   setHandler
 } from '@temporalio/workflow';
-import {EntityOnboardingState} from '../messages/queries/v0'
+import {EntityOnboardingState} from '../messages/queries/v1'
 import * as proto from '@temporalio/proto/protos/root'
 import {ApproveEntityRequest} from '../messages/commands/v0'
 import {ApprovalStatus} from '../messages/values/v0'
-import type { createIntegrationsHandlers }  from '../integrations'
+import type {createIntegrationsHandlers} from '../integrations'
 
 const { registerCrmEntity } = proxyActivities<ReturnType<typeof createIntegrationsHandlers>>({
   startToCloseTimeout: '5 seconds'
@@ -20,11 +21,10 @@ export const queryGetState = defineQuery<EntityOnboardingState>('getState');
 export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
 
 export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
-export const ERR_INVALID_ARGS = 'InvalidArgs'
 
 async function assertValidArgs(args: OnboardEntityRequest) {
   if(!args.id.trim() || !args.value.trim()) {
-    throw ApplicationFailure.create({ type: ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
+    throw ApplicationFailure.create({ type: Errors.ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
   }
 }
 
