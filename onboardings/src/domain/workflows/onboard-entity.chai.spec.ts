@@ -32,7 +32,7 @@ describe('OnboardEntity.chai', function() {
       })
       const args: OnboardEntityRequest = {
         id: crypto.randomBytes(16).toString('hex'),
-        value: ' ',
+        value: ' ', completionTimeoutSeconds: 0, deputyOwnerEmail: '', skipApproval: false
       }
       await expect((async () => {
         await worker.runUntil(async () => {

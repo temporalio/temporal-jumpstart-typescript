@@ -2,11 +2,11 @@ import {TestWorkflowEnvironment} from '@temporalio/testing';
 import {before, describe, it} from 'mocha';
 import {Worker} from '@temporalio/worker';
 import * as onboardEntityLatest from './onboard-entity'
-import * as onboardEntityV1 from './onboard-entity-v1'
+import * as onboardEntityV1Beta from './onboard-entity-v1-beta'
 import {OnboardEntityRequest} from '../messages/workflows/v0'
 import crypto from 'crypto'
 import {ApplicationFailure} from '@temporalio/workflow'
-import {ApproveEntityRequest, RegisterCrmEntityRequest} from '../messages/commands/v0'
+import {ApproveEntityRequest} from '../messages/commands/v0'
 import {EntityOnboardingState} from '../messages/queries/v0'
 import {ApprovalStatus} from '../messages/values/v0'
 import {createIntegrationsHandlers} from '../integrations'
@@ -18,8 +18,8 @@ const LOCAL_CLI_PATH = '/opt/homebrew/bin/temporal'
 const TIMESKIPPING_SERVER_PATH = '/Users/mnichols/dev/sdk-java/temporal-test-server/build/graal/temporal-test-server'
 
 describe('OnboardEntity', function () {
-  describe('V1', function () {
-    let {ERR_INVALID_ARGS, onboardEntity, workflowsPath} = onboardEntityV1
+  describe('V1-beta', function () {
+    let {ERR_INVALID_ARGS, onboardEntity, workflowsPath} = onboardEntityV1Beta
 
     let testEnv: TestWorkflowEnvironment
     // NOTE we have a single environment for the entire suite
@@ -110,13 +110,14 @@ describe('OnboardEntity', function () {
     })
   })
 })
-describe('VLatest', function () {
+describe('V1', function () {
   let {
     onboardEntity,
     signalApprove,
     queryGetState,
     workflowsPath,
   } = onboardEntityLatest
+
   describe('givenValidArgsWithOwnerApprovalNoDeputyOwner', function () {
 
     let testEnv: TestWorkflowEnvironment
@@ -159,20 +160,17 @@ describe('VLatest', function () {
           skipApproval: false
         }
         let actual: EntityOnboardingState = {
+          approval: {comment: '', status: ApprovalStatus.PENDING},
           id: '',
-          status: '',
           sentRequest: {
-            id: '',
-            value: '',
             completionTimeoutSeconds: 0,
-            deputyOwnerEmail: undefined,
-            skipApproval: false
-          },
-          approval: {
-            status: ApprovalStatus.PENDING,
-            comment: ''
-          }
+            deputyOwnerEmail: '',
+            id: '',
+            skipApproval: false,
+            value: ''
+          }, status: ''
         }
+
         await worker.runUntil(async () => {
           // here we change to use `start` so we can perform other acts on the Workflow
           let wfRun = await client.workflow.start(onboardEntity, {
@@ -240,9 +238,7 @@ describe('VLatest', function () {
           assert.equal(actual.id, args.id)
           assert.equal(actual.approval.status, ApprovalStatus.APPROVED)
         })
-        // assert.equal(registration, { id: args.id, value: args.value})
         registerCrmEntity.verify()
-
       })
     })
   })
