@@ -1,4 +1,4 @@
-import {OnboardEntityRequest} from '../messages/workflows/v0'
+import {OnboardEntityRequest, Errors} from '../messages/workflows/v0'
 import {
   ApplicationFailure,
   defineQuery,
@@ -21,7 +21,6 @@ export const queryGetState = defineQuery<EntityOnboardingState>('getState');
 export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
 
 export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
-export const ERR_INVALID_ARGS = 'InvalidArgs'
 
 async function assertValidArgs(args: OnboardEntityRequest) {
   // poor man's validator
@@ -42,7 +41,7 @@ async function assertValidArgs(args: OnboardEntityRequest) {
    * Note that `WorkflowFailedException` will count towards the `workflow_failed` SDK Metric (https://docs.temporal.io/references/sdk-metrics#workflow_failed).
    */
   if(!args.id.trim() || !args.value.trim()) {
-    throw ApplicationFailure.create({ type: ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
+    throw ApplicationFailure.create({ type: Errors.ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
   }
 }
 export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):Promise<void> => {

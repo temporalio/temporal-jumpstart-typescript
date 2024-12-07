@@ -68,8 +68,7 @@ describe('OnboardingsAPI#v1', async () => {
       const cfg = createCfg(taskQueue)
       const wf = new WorkflowClient()
       const mockWf = sinon.mock(wf)
-      let cmd:OnboardEntityRequest = {...args, completionTimeoutSeconds: 60, skipApproval: false}
-      type badFunc = () => Promise<void>
+      let cmd:OnboardEntityRequest = {...args, completionTimeoutSeconds: 60, skipApproval: false, deputyOwnerEmail: ''}
       mockWf.expects('start')
         // use sinon's custom matcher to specify the implementation being "started"
         .withArgs(sinon.match(function(fn:any)  {

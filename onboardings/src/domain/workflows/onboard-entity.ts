@@ -30,13 +30,13 @@ async function assertValidArgs(args: OnboardEntityRequest) {
 
 export const workflowsPath = require.resolve(__filename)
 export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):Promise<void> => {
+  log.info('started entity onboarding', args)
   let state:EntityOnboardingState = {
     id: args.id,
     status:  proto.temporal.api.enums.v1.WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_RUNNING.toString(),
     sentRequest: args,
     approval: { status: ApprovalStatus.PENDING, comment: ''}
   }
-  log.info('HI FROM LATESt')
   await assertValidArgs(args)
   setHandler(queryGetState, () => state)
   setHandler(signalApprove, (cmd: ApproveEntityRequest) => {

@@ -16,7 +16,7 @@ describe('Integrations', function() {
     })
     after(async () => {
     })
-    it.only('should throw service unrecoverable', async () => {
+    it('should throw service unrecoverable', async () => {
       let crmClient = {
         getCrmEntityById: async (id: string): Promise<string> => {
           throw {
@@ -26,7 +26,7 @@ describe('Integrations', function() {
           }
         },
         registerCrmEntity: async (id: string, value: string): Promise<void> => {
-
+          throw new Error('not implemented')
         }
       }
 
@@ -38,7 +38,8 @@ describe('Integrations', function() {
       await assert.rejects(async () => {
         await testEnv.run(sut.registerCrmEntity, args)
       }, function(e :any) :e is ApplicationFailure {
-        return (e as ApplicationFailure).type == Errors.ERR_SERVICE_UNRECOVERABLE
+        let appFail = e as ApplicationFailure
+        return appFail.type == Errors.ERR_SERVICE_UNRECOVERABLE && !!appFail.nonRetryable
       }, 'service error was not thrown')
     })
   } )
