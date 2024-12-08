@@ -4,18 +4,13 @@ import { cfg } from '../config'
 import fs from 'fs'
 import https from 'https'
 import cors from 'cors'
-import { createRouter as createV0Router } from './v0.js'
-import {Clients, createClients} from '../clients/index.js'
+import {createClients} from '../clients'
+const { createRouter: createV0Router } = require('./v0')
+const { createRouter: createV1Router } = require( './v1')
 createClients(cfg).then(clients => {
   const app: Express = express()
   app.use(cors())
   app.use(express.json())
-
-// const onboardings: Router = express.Router()
-//
-// onboardings.get('/', (req: Request, res: Response) => {
-//   res.send('Express + TypeScript Server')
-// })
 
   let options = {}
   if (cfg.api.mtls && cfg.api.mtls.certChainFile && cfg.api.mtls.keyFile) {
@@ -27,7 +22,9 @@ createClients(cfg).then(clients => {
   }
 
   const v0 = createV0Router({ config: cfg, clients })
-  app.use('/v0', v0)
+  const v1 = createV1Router({ config :cfg, clients })
+  app.use('/api/v0', v0)
+  app.use('/api/v1', v1)
   const httpsServer = https.createServer(options, app)
   return httpsServer.listen(cfg.api.url.port, () => {
     console.log(`API server listening at ${cfg.api.url.toString()}`)
