@@ -194,7 +194,7 @@ describe('OnboardEntity', function () {
           const args: messagesWorkflowsV1.OnboardEntityRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
-            completionTimeoutSeconds: 2,
+            completionTimeoutSeconds: 30,
             deputyOwnerEmail: '',
             skipApproval: false
           }
@@ -218,7 +218,6 @@ describe('OnboardEntity', function () {
             workflowsPath: require.resolve('./onboard-entity'),
             activities: mockedActivities,
           })
-          let actual: messagesQueriesV1.EntityOnboardingState
           await worker.runUntil(async () => {
             let wfRun = await client.workflow.start(onboardEntity, {
               taskQueue,
@@ -229,10 +228,7 @@ describe('OnboardEntity', function () {
             // simulate a delay before sending our approval
             await testEnv.sleep('1 second')
             await wfRun.signal(signalApprove, cmd)
-            // note we are using the Temporal sleep to play into the TimeSkipping
-            actual = await wfRun.query<messagesQueriesV1.EntityOnboardingState>(queryGetState)
-            assert.equal(actual.id, args.id)
-            assert.equal(actual.approval.status, ApprovalStatus.APPROVED)
+            await testEnv.sleep('1 second')
           })
           registerCrmEntity.verify()
         })
@@ -314,60 +310,93 @@ describe('OnboardEntity', function () {
           assert.equal(actual.approval.status, ApprovalStatus.APPROVED)
           assert.equal(actual.approval.comment, 'deputy approves')
         })
-        it('should notify the deputy for approval', async function() {
-
-        })
         // behavior verification
-        it('should register the entity', async function () {
+        it('should notify the deputy for approval', async function() {
           let {nativeConnection, client} = testEnv
           let taskQueue = 'test'
-
-
           const args: messagesWorkflowsV1.OnboardEntityRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
-            completionTimeoutSeconds: 2,
-            deputyOwnerEmail: '',
+            completionTimeoutSeconds: 30,
+            deputyOwnerEmail: 'deputy@dawg.com',
             skipApproval: false
           }
+          let sendEmail = sinon.mock().withArgs({
+            id: args.id, deputyOwnerEmail: args.deputyOwnerEmail
+          }).once().resolves()
 
-          /*
-            Two ways to mock behavior:
-            1. sinon mock with fluent expectations + `verify`
-            2. plain ole callback mock with `assert` on inputs and counts
-           */
-          let registerCrmEntity = sinon.mock()
-          registerCrmEntity.withArgs({id: args.id, value: args.value}).once().resolves()
-
-          // If I want to assert the contract of funcs I want to use as activities I could do this:
-          const mockedActivities: ReturnType<typeof createIntegrationsHandlers> = {
-            registerCrmEntity,
+          let stubbedIntegrationHandlers: ReturnType<typeof createIntegrationsHandlers> = {
+            // just resolve our activity, verify its call in the next test
+            registerCrmEntity: sinon.stub().resolves()
           }
-
+          let stubbedNotificationsHandlers: ReturnType<typeof createNotificationsHandlers> = {
+            sendEmail,
+          }
           let worker = await Worker.create({
             connection: nativeConnection,
             taskQueue,
-            workflowsPath: require.resolve('./onboard-entity'),
-            activities: mockedActivities,
+            workflowsPath,
+            activities: {...stubbedIntegrationHandlers, ...stubbedNotificationsHandlers},
           })
-          let actual: messagesQueriesV1.EntityOnboardingState
+
           await worker.runUntil(async () => {
+            // here we change to use `start` so we can perform other acts on the Workflow
             let wfRun = await client.workflow.start(onboardEntity, {
               taskQueue,
               workflowId: args.id,
               args: [args],
             })
-            let cmd: ApproveEntityRequest = {comment: 'nocomment'}
+            let cmd: ApproveEntityRequest = {comment: 'deputy approves'}
             // simulate a delay before sending our approval
-            await testEnv.sleep('1 second')
+            await testEnv.sleep('20 seconds')
             await wfRun.signal(signalApprove, cmd)
+            await testEnv.sleep('2 second')
+          })
+          sendEmail.verify()
+        })
+        // behavior verification
+        it('should register the entity', async function() {
+          let {nativeConnection, client} = testEnv
+          let taskQueue = 'test'
+          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+            id: crypto.randomBytes(16).toString('hex'),
+            value: crypto.randomBytes(16).toString('hex'),
+            completionTimeoutSeconds: 30,
+            deputyOwnerEmail: 'deputy@dawg.com',
+            skipApproval: false
+          }
+          let registerCrmEntity = sinon.mock().withArgs({ id: args.id, value: args.value}).once().resolves()
+          let stubbedIntegrationHandlers: ReturnType<typeof createIntegrationsHandlers> = {
+            // just resolve our activity, verify its call in the next test
+            registerCrmEntity
+          }
+          let stubbedNotificationsHandlers: ReturnType<typeof createNotificationsHandlers> = {
+            sendEmail: sinon.stub().resolves(),
+          }
+          let worker = await Worker.create({
+            connection: nativeConnection,
+            taskQueue,
+            workflowsPath,
+            activities: {...stubbedIntegrationHandlers, ...stubbedNotificationsHandlers},
+          })
+
+          await worker.runUntil(async () => {
+            // here we change to use `start` so we can perform other acts on the Workflow
+            let wfRun = await client.workflow.start(onboardEntity, {
+              taskQueue,
+              workflowId: args.id,
+              args: [args],
+            })
+            let cmd: ApproveEntityRequest = {comment: 'deputy approves'}
+            // simulate a delay before sending our approval
+            await testEnv.sleep('16 seconds')
+            await wfRun.signal(signalApprove, cmd)
+            await testEnv.sleep('1 seconds')
             // note we are using the Temporal sleep to play into the TimeSkipping
-            actual = await wfRun.query<messagesQueriesV1.EntityOnboardingState>(queryGetState)
-            assert.equal(actual.id, args.id)
-            assert.equal(actual.approval.status, ApprovalStatus.APPROVED)
           })
           registerCrmEntity.verify()
         })
+
       })
     })
 
