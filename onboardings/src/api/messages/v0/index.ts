@@ -1,4 +1,4 @@
-import {OnboardEntityRequest} from '../../../domain/messages/v0'
+import {OnboardEntityRequest} from '../../../domain/messages/workflows/v0'
 import * as proto from '@temporalio/proto/protos/root'
 export type PingRequest = {
   value: string

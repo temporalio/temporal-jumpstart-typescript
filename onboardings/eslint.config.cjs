@@ -1,12 +1,12 @@
-import globals from 'globals'
+const globals = require( 'globals')
 
-import pluginJs from '@eslint/js';
+const pluginJs = require( '@eslint/js')
 
-import importPlugin from "eslint-plugin-import";
+const importPlugin = require('eslint-plugin-import')
 
-import tsEslint from "typescript-eslint";
+const tsEslint = require('typescript-eslint');
 
-import stylistic from "@stylistic/eslint-plugin";
+const stylistic = require('@stylistic/eslint-plugin')
 // noinspection JSUnusedGlobalSymbols
 export default [
   {

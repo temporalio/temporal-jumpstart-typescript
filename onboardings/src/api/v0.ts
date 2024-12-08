@@ -3,7 +3,7 @@ import { Clients } from '../clients'
 import { Config } from '../config'
 import {TypedRequestBody} from './typed-request-body'
 import {OnboardingsEntityGet, OnboardingsPut, PingRequest, PingResponse} from './messages/v0'
-import {OnboardEntityRequest} from '../domain/messages/v0'
+import {OnboardEntityRequest} from '../domain/messages/workflows/v0'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {defaultPayloadConverter} from '@temporalio/worker'
 

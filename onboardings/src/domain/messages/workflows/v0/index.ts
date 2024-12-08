@@ -9,3 +9,6 @@ export type OnboardEntityRequest = {
   id: string
   value: string
 }
+export enum Errors {
+  ERR_INVALID_ARGS = 'ERR_INVALID_ARGS'
+}
