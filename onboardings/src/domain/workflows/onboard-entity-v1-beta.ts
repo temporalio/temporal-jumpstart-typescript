@@ -1,4 +1,4 @@
-import {OnboardEntityRequest, Errors} from '../messages/workflows/v0'
+import {ActivateDeviceRequest, Errors} from '../messages/workflows/v0'
 import {
   ApplicationFailure,
   defineQuery,
@@ -20,9 +20,9 @@ export const workflowsPath = require.resolve(__filename)
 export const queryGetState = defineQuery<EntityOnboardingState>('getState');
 export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
 
-export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
+export type OnboardEntity = (params: ActivateDeviceRequest) => Promise<void>
 
-async function assertValidArgs(args: OnboardEntityRequest) {
+async function assertValidArgs(args: ActivateDeviceRequest) {
   // poor man's validator
   /*
    * Temporal is not prescriptive about the strategy you choose for indicating failures in your Workflows.
@@ -44,7 +44,7 @@ async function assertValidArgs(args: OnboardEntityRequest) {
     throw ApplicationFailure.create({ type: Errors.ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
   }
 }
-export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):Promise<void> => {
+export const onboardEntity:OnboardEntity = async (args: ActivateDeviceRequest ):Promise<void> => {
   let state:EntityOnboardingState = {
     id: args.id,
     status:  proto.temporal.api.enums.v1.WorkflowExecutionStatus.WORKFLOW_EXECUTION_STATUS_RUNNING.toString(),

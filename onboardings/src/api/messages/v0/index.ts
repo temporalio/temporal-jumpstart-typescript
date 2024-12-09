@@ -1,4 +1,4 @@
-import {OnboardEntityRequest} from '../../../domain/messages/workflows/v0'
+import {ActivateDeviceRequest} from '../../../domain/messages/workflows/v0'
 import * as proto from '@temporalio/proto/protos/root'
 export type PingRequest = {
   value: string
@@ -15,5 +15,5 @@ export type OnboardingsPut = {
 export type OnboardingsEntityGet = {
   id: string
   status?: proto.temporal.api.enums.v1.WorkflowExecutionStatus | null
-  sentRequest?: OnboardEntityRequest
+  sentRequest?: ActivateDeviceRequest
 }

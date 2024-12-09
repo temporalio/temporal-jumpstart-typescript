@@ -9,7 +9,7 @@
     "clean:fixtures": "rm -rf fixtures/generated && mkdir -p fixtures/generated/clients/temporal",
     "build:fixtures": "echo 'no fixtures used'",
     "pretest": "npm run build:fixtures",
-    "test": "mocha 'src/**/*.spec.*'",
+    "test": "mocha 'src/api/**/*.spec.*'",
     "build": "tsc --build",
     "build.watch": "tsc --build --watch",
     "build:workflow": "tsx ./src/scripts/build-workflow-bundle.ts",

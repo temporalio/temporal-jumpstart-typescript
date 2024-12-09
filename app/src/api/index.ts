@@ -2,11 +2,11 @@ import express, { Express } from 'express'
 // import {createClient} from '../clients/temporal/index.js'
 import { cfg } from '../config'
 import fs from 'fs'
-import https from 'https'
+import http from 'http'
 import cors from 'cors'
 import {createClients} from '../clients'
 const { createRouter: createV0Router } = require('./v0')
-const { createRouter: createV1Router } = require( './v1')
+// const { createRouter: createV1Router } = require( './v1')
 createClients(cfg).then(clients => {
   const app: Express = express()
   app.use(cors())
@@ -22,10 +22,10 @@ createClients(cfg).then(clients => {
   }
 
   const v0 = createV0Router({ config: cfg, clients })
-  const v1 = createV1Router({ config :cfg, clients })
+  // const v1 = createV1Router({ config :cfg, clients })
   app.use('/api/v0', v0)
-  app.use('/api/v1', v1)
-  const httpsServer = https.createServer(options, app)
+  // app.use('/api/v1', v1)
+  const httpsServer = http.createServer(options, app)
   return httpsServer.listen(cfg.api.url.port, () => {
     console.log(`API server listening at ${cfg.api.url.toString()}`)
   })

@@ -3,7 +3,7 @@ import { Clients } from '../clients'
 import { Config } from '../config'
 import {TypedRequestBody} from './typed-request-body'
 import {OnboardingsPut} from './messages/v0'
-import {OnboardEntityRequest} from '../domain/messages/workflows/v1'
+import {ActivateDeviceRequest} from '../domain/messages/workflows/v1'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {WorkflowNotFoundError} from '@temporalio/client'
 import {EntityOnboardingState} from '../domain/messages/queries/v0'
@@ -13,7 +13,7 @@ interface V1Dependencies {
   clients: Clients
   config: Config
 }
-async function onboardEntity(params: OnboardEntityRequest) {}
+async function onboardEntity(params: ActivateDeviceRequest) {}
 export const createRouter = (deps: V1Dependencies) => {
   const router: Router = express.Router()
   router.get('/onboardings/:id', async (req, res) => {
@@ -34,7 +34,7 @@ export const createRouter = (deps: V1Dependencies) => {
   })
   router.put('/onboardings/:id', async (req:TypedRequestBody<OnboardingsPut>, res: Response) => {
 
-    let cmd:OnboardEntityRequest = {...req.body,
+    let cmd:ActivateDeviceRequest = {...req.body,
       deputyOwnerEmail: '',
       completionTimeoutSeconds: 60,
       skipApproval: false,

@@ -1,4 +1,4 @@
-import {Errors, OnboardEntityRequest} from '../messages/workflows/v1'
+import {Errors, ActivateDeviceRequest} from '../messages/workflows/v1'
 import {
   ApplicationFailure,
   condition, continueAsNew,
@@ -27,16 +27,16 @@ const { sendEmail } = proxyActivities<ReturnType<typeof createNotificationsHandl
 export const queryGetState = defineQuery<EntityOnboardingState>('getState');
 export const signalApprove = defineSignal<[ApproveEntityRequest]>('approve')
 
-export type OnboardEntity = (params: OnboardEntityRequest) => Promise<void>
+export type OnboardEntity = (params: ActivateDeviceRequest) => Promise<void>
 
-async function assertValidArgs(args: OnboardEntityRequest) {
+async function assertValidArgs(args: ActivateDeviceRequest) {
   if(!args.id.trim() || !args.value.trim()) {
     throw ApplicationFailure.create({ type: Errors.ERR_INVALID_ARGS, message: '`id` and `value` are required properties.'})
   }
 }
 
 export const workflowsPath = require.resolve(__filename)
-export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):Promise<void> => {
+export const onboardEntity:OnboardEntity = async (args: ActivateDeviceRequest ):Promise<void> => {
   log.info('started entity onboarding', args)
   // initialize state as soon as possible, definitely before signal/update handlers
   let state:EntityOnboardingState = {
@@ -63,7 +63,7 @@ export const onboardEntity:OnboardEntity = async (args: OnboardEntityRequest ):P
       }
       log.info('notifying deputy')
       await sendEmail({id: args.id, deputyOwnerEmail: args.deputyOwnerEmail})
-      const canArgs: OnboardEntityRequest = {
+      const canArgs: ActivateDeviceRequest = {
         id: args.id,
         value: args.value,
         deputyOwnerEmail: undefined,

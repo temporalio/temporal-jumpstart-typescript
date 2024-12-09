@@ -3,7 +3,7 @@ import { Clients } from '../clients'
 import { Config } from '../config'
 import {TypedRequestBody} from './typed-request-body'
 import {OnboardingsEntityGet, OnboardingsPut, PingRequest, PingResponse} from './messages/v0'
-import {OnboardEntityRequest} from '../domain/messages/workflows/v0'
+import {ActivateDeviceRequest} from '../domain/messages/workflows/v0'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {defaultPayloadConverter} from '@temporalio/worker'
 
@@ -38,7 +38,7 @@ export const createRouter = (deps: V0Dependencies) => {
     res.json(body)
   })
   router.put('/onboardings/:id', async (req:TypedRequestBody<OnboardingsPut>, res: Response) => {
-    let cmd:OnboardEntityRequest = {...req.body}
+    let cmd:ActivateDeviceRequest = {...req.body}
     let wfExec = await deps.clients.temporal.workflow.start(WORKFLOW_TYPE, {
       taskQueue: deps.config.temporal.worker.taskQueue,
       args: [cmd],

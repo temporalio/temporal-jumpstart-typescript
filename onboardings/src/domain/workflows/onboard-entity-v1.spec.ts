@@ -56,7 +56,7 @@ describe('OnboardEntity', function () {
           taskQueue,
           workflowsPath,
         })
-        const args: messagesWorkflowsv0.OnboardEntityRequest = {
+        const args: messagesWorkflowsv0.ActivateDeviceRequest = {
           id: crypto.randomBytes(16).toString('hex'),
           value: '  ', // missing a valid VALUE
         }
@@ -79,7 +79,7 @@ describe('OnboardEntity', function () {
       it('should register the crm entity', async function () {
         let {nativeConnection, client} = testEnv
         let taskQueue = 'v1'
-        const args: messagesWorkflowsv0.OnboardEntityRequest = {
+        const args: messagesWorkflowsv0.ActivateDeviceRequest = {
           id: crypto.randomBytes(16).toString('hex'),
           value: crypto.randomBytes(16).toString('hex'),
         }
@@ -148,7 +148,7 @@ describe('OnboardEntity', function () {
             workflowsPath,
             activities: stubbedActivities,
           })
-          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+          const args: messagesWorkflowsV1.ActivateDeviceRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
             completionTimeoutSeconds: 2,
@@ -191,7 +191,7 @@ describe('OnboardEntity', function () {
           let taskQueue = 'test'
 
 
-          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+          const args: messagesWorkflowsV1.ActivateDeviceRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
             completionTimeoutSeconds: 30,
@@ -272,7 +272,7 @@ describe('OnboardEntity', function () {
             workflowsPath,
             activities: {...stubbedIntegrationHandlers, ...stubbedNotificationsHandlers},
           })
-          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+          const args: messagesWorkflowsV1.ActivateDeviceRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
             completionTimeoutSeconds: 30,
@@ -314,7 +314,7 @@ describe('OnboardEntity', function () {
         it('should notify the deputy for approval', async function() {
           let {nativeConnection, client} = testEnv
           let taskQueue = 'test'
-          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+          const args: messagesWorkflowsV1.ActivateDeviceRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
             completionTimeoutSeconds: 30,
@@ -358,7 +358,7 @@ describe('OnboardEntity', function () {
         it('should register the entity', async function() {
           let {nativeConnection, client} = testEnv
           let taskQueue = 'test'
-          const args: messagesWorkflowsV1.OnboardEntityRequest = {
+          const args: messagesWorkflowsV1.ActivateDeviceRequest = {
             id: crypto.randomBytes(16).toString('hex'),
             value: crypto.randomBytes(16).toString('hex'),
             completionTimeoutSeconds: 30,

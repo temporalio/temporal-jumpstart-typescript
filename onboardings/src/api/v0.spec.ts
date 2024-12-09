@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import {OnboardingsPut} from './messages/v0'
 import {Client, WorkflowClient} from '@temporalio/client'
 import express, {Express, Response} from 'express'
-import {OnboardEntityRequest} from '../domain/messages/workflows/v0'
+import {ActivateDeviceRequest} from '../domain/messages/workflows/v0'
 import {Config} from '../config'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {createCfg, createTemporalClient} from '../test/utils'
@@ -66,7 +66,7 @@ describe('OnboardingsAPI#v0', async () => {
       const cfg = createCfg(taskQueue)
       const wf = new WorkflowClient()
       const mockWf = sinon.mock(wf)
-      let cmd:OnboardEntityRequest = {...args}
+      let cmd:ActivateDeviceRequest = {...args}
       mockWf.expects('start')
         .withExactArgs(WORKFLOW_TYPE, {
           // A subtle source of bugs are incorrect task queue assignments in starters

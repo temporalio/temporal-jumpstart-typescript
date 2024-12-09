@@ -77,20 +77,20 @@ export interface PubSubConfig {
 const createApiCfg =  (): APIConfig => {
   const apiUrlEnv = process.env['API_URL']
   const apiUrl = new URL(apiUrlEnv || 'https://localhost:4000/api')
-  const mtls: MTLSConfig = {
-    certChainFile: process.env['API_CONNECTION_MTLS_CERT_CHAIN_FILE'],
-    keyFile: process.env['API_CONNECTION_MTLS_KEY_FILE'],
-    // key: Buffer.from(process.env['API_CONNECTION_MTLS_KEY'] || ''),
-    // certChain: Buffer.from(process.env['API_CONNECTION_MTLS_CERT_CHAIN'] || ''),
-    pkcs: process.env['API_CONNECTION_MTLS_PKCS'],
-    insecureTrustManager: Boolean(process.env['API_CONNECTION_MTLS_INSECURE_TRUST_MANAGER'] || 'false'),
-    keyPassword: process.env['API_CONNECTION_MTLS_KEY_PASSWORD'],
-    serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
-    serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE'],
-  }
+  // const mtls: MTLSConfig = {
+  //   certChainFile: process.env['API_CONNECTION_MTLS_CERT_CHAIN_FILE'],
+  //   keyFile: process.env['API_CONNECTION_MTLS_KEY_FILE'],
+  //   // key: Buffer.from(process.env['API_CONNECTION_MTLS_KEY'] || ''),
+  //   // certChain: Buffer.from(process.env['API_CONNECTION_MTLS_CERT_CHAIN'] || ''),
+  //   pkcs: process.env['API_CONNECTION_MTLS_PKCS'],
+  //   insecureTrustManager: Boolean(process.env['API_CONNECTION_MTLS_INSECURE_TRUST_MANAGER'] || 'false'),
+  //   keyPassword: process.env['API_CONNECTION_MTLS_KEY_PASSWORD'],
+  //   serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
+  //   serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE'],
+  // }
   return {
     port: apiUrl.port,
-    mtls,
+    // mtls,
     url: apiUrl,
   }
 }

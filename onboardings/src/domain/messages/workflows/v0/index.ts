@@ -5,7 +5,7 @@ export type PingResponse = {
   value: string
 }
 
-export type OnboardEntityRequest = {
+export type ActivateDeviceRequest = {
   id: string
   value: string
 }

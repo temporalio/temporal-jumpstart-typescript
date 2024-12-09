@@ -1,5 +1,5 @@
 
-export type OnboardEntityRequest = {
+export type ActivateDeviceRequest = {
   id: string
   value: string
   completionTimeoutSeconds: number

@@ -56,7 +56,7 @@ exiting the Workflow as `Failed`. Here are steps we will take to model this safe
 
 * Introduce an explicit `state` object we can use as a private variable inside our Workflow to track the progress of various changes in our Workflow
     * Here, we are going to wait for `IsApproved` to be flipped to `true` before proceeding
-* Extend our `OnboardEntityRequest` to accept an optional input for the `timeout` of approval
+* Extend our `ActivateDeviceRequest` to accept an optional input for the `timeout` of approval
     * Why not use `WorkflowExecutionTimeout`?
         * Primarily because we want to express this as a _business rule_. We may want to extend this time later and we want to allow the workflow, not the caller, to govern execution rules.
         * Note that an approval could come in very late and while the activities that should complete are running they could be terminated due to the execution timeout. This would not be the intent of any time threshold.

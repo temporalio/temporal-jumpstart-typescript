@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import {OnboardingsPut} from './messages/v0'
 import {Client, WorkflowClient} from '@temporalio/client'
 import express, {Express, Response} from 'express'
-import {OnboardEntityRequest} from '../domain/messages/workflows/v1'
+import {ActivateDeviceRequest} from '../domain/messages/workflows/v1'
 import {Config} from '../config'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
 import {createCfg, createTemporalClient} from '../test/utils'
@@ -68,7 +68,7 @@ describe('OnboardingsAPI#v1', async () => {
       const cfg = createCfg(taskQueue)
       const wf = new WorkflowClient()
       const mockWf = sinon.mock(wf)
-      let cmd:OnboardEntityRequest = {...args, completionTimeoutSeconds: 60, skipApproval: false, deputyOwnerEmail: ''}
+      let cmd:ActivateDeviceRequest = {...args, completionTimeoutSeconds: 60, skipApproval: false, deputyOwnerEmail: ''}
       mockWf.expects('start')
         // use sinon's custom matcher to specify the implementation being "started"
         .withArgs(sinon.match(function(fn:any)  {
