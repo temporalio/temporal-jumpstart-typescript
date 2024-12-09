@@ -1,7 +1,7 @@
 import { TestWorkflowEnvironment } from '@temporalio/testing';
 import { before, describe, it } from 'mocha';
 import { Worker } from '@temporalio/worker';
-import {onboardEntity} from './onboard-entity'
+import {onboardEntity} from './onboard-entity-v1-beta'
 import {Errors, OnboardEntityRequest} from '../messages/workflows/v0'
 import crypto from 'crypto'
 import {WorkflowFailedError} from '@temporalio/client'
@@ -32,7 +32,7 @@ describe('OnboardEntity.chai', function() {
       })
       const args: OnboardEntityRequest = {
         id: crypto.randomBytes(16).toString('hex'),
-        value: ' ', completionTimeoutSeconds: 0, deputyOwnerEmail: '', skipApproval: false
+        value: ' ',
       }
       await expect((async () => {
         await worker.runUntil(async () => {

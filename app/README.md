@@ -1,8 +1,4 @@
-# Temporal Jumpstart:Onboardings
-
-## Product Requirements
-
-Checkout the Product Requirements Document [here](Curriculum_Onboarding_UseCase_PRD.pdf)
+# Temporal Jumpstart:App
 
 ## Setup
 
@@ -27,7 +23,7 @@ In separate terminals:
 
 ```shell
 # inside onboardings app
-cd onboardings
+cd app
 # clear the things
 rm -rf build
 # build all the things

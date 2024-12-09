@@ -1,14 +1,16 @@
-import {createWorker, createWorkerOptions} from './workers/worker.js'
-import {cfg} from './config/index.js'
+import { createWorker, createWorkerOptions } from './workers'
+import { cfg } from './config'
 
-import * as acts from './workflows/activities.js'
+import * as acts from './domain/workflows/activities.js'
 
+createWorkerOptions(cfg).then(opts => {
+  opts.activities = acts
 
-const opts = await createWorkerOptions(cfg)
-opts.activities = acts
-const worker = await createWorker(opts)
+  return createWorker(opts).then(worker => {
+    return worker.run().catch((err) => {
+      console.error(err)
+      process.exit(1)
+    })
+  })
 
-await worker.run().catch(err => {
-    console.error(err)
-    process.exit(1)
 })

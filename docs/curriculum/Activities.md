@@ -51,21 +51,21 @@ we could elect to use a `LocalActivity`.
 
 ### Refactorings
 
-- `Messages.Commands`
-- `Domain.Handlers`
-- `Domain.Clients.ICrmClient`
+- `messages.Commands`
+- `domain.integrations`
+- `domain.clients.CrmClient`
 
-_Test-Drive our `RegisterCrmEntity` Activity`_
+_Test-Drive our `registerCrmEntity` Activity`_
 
 Let's use our first Activity test to drive out all the third-party Clients, Integrations packages,
 and establish the message contracts for our first Activity.
 We will create Packages for each of our third-party client dependencies we plan on using in our Activity Handlers.
 
-_Introduce `Messages.Commands`_
+_Introduce `messages.commands`_
 
 Our `Commands` package will hold the contracts we use to Request operations with our Activity Handlers.
 
-_Introduce `Domain.Integrations`_
+_Introduce `domain.integrations`_
 
 Our `Activities` are the atomic operations, the "steps", we will use to get things done in our Use Case.
 We will group the calls to our third party dependencies (eg our "CRM" software) into an explicit
@@ -77,7 +77,7 @@ _Introduce `proxyActivities`_
 We configure the ActivityOptions for our activities with `proxyActivities`. Let's drive out the
 `notifications` package handlers signature in Workflow tests.
 
-_Introduce `CrmClient` to `Domain.Clients`_
+_Introduce `CrmClient` to `domain.clients`_
 
 The CRM Client needs to be created at Application startup and injected into our Activity Handlers.
 This client requires an "API Key" to be passed into it upon creation.
@@ -98,9 +98,9 @@ There are two "sides" to configure these (string) `ErrorType` exclusions.
 Which you do, depends on who "owns" the retry rule.
 
 1. **_Workflow Owner_** : When calling the activity *from the Workflow* you can provide the `ErrorType` as one of the `NonRetryableErrorTypes`
-  1. This is useful when the Workflow wants to enforce some kind of compensation logic or short-circuiting within a time span.
-  2. Avoid coupling Workflow execution path to low-level exceptions that should be more generalized in your Activities.
+  * This is useful when the Workflow wants to enforce some kind of compensation logic or short-circuiting within a time span.
+  * Avoid coupling Workflow execution path to low-level exceptions that should be more generalized in your Activities.
 2. **_Activity Owner_** : When an Activity raises an `ApplicationFailureException` and sets the `nonRetryable` flag to `true`
-  1. This is useful if your Activity knows it will never recover and so will cause a stuck Workflow.
-  2. A Workflow author should often not be coupled to such low-level concerns so the Activity can own this rule.
-  3. Avoid coupling Activity retryability to some assumption about how it is being executed. Setting this flag from the Activity should be reserved for cases where it will never succeed.
+  * This is useful if your Activity knows it will never recover and so will cause a stuck Workflow.
+  * A Workflow author should often not be coupled to such low-level concerns so the Activity can own this rule.
+  * Avoid coupling Activity retryability to some assumption about how it is being executed. Setting this flag from the Activity should be reserved for cases where it will never succeed.
