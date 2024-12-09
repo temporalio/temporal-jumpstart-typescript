@@ -1,4 +1,17 @@
-# Temporal Jumpstart:Onboardings
+# Temporal Jumpstart:App
+
+## Setup
+
+* configure `.env`
+* `npm install`
+
+## Running The Application
+
+In separate terminals:
+
+1. Temporal Server: `temporal server start-dev`
+2. Starter API: `npm run api`
+3. Worker: `npm run domain`
 
 ### Production Builds
 
@@ -10,12 +23,11 @@
 
 ```shell
 # inside onboardings app
-cd onboardings
+cd app
 # clear the things
 rm -rf build
 # build all the things
-npm run build:proto && \
-  npm run build && \
+npm run build && \
   npm run build:workflow && \
   cp .env* build
 # go into our build dir
@@ -28,12 +40,3 @@ NODE_ENV=production node index.js
 ### Developer Builds
 
 1. _ENSURE JS EXTENSION EXISTS IN WORKFLOW IMPORTS_, then `npx tsx src/index.ts` starts the Worker in dev mode
-
-### Custom Payload Converter
-
-To use the `buf` PayloadConverter implementation:
-```sh
-npm run build:proto
-```
-
-This uses the default `buf.yaml` and `buf.gen.yaml` config and template to plop generated code into `src/generated`.
