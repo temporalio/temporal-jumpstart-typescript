@@ -1,15 +1,12 @@
-import { Worker, type WorkerOptions } from '@temporalio/worker'
-import { createNativeConnection } from '../clients/temporal/index.js'
-import { Config } from '../config/index.js'
+import {DefaultLogger, Runtime, Worker, type WorkerOptions} from '@temporalio/worker'
+import webpack  from 'webpack'
+import { createNativeConnection } from '../clients/temporal'
+import { Config } from '../config'
 import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 export const createWorkerOptions = async (cfg: Config, activities?: object): Promise<WorkerOptions> => {
-  const { Temporal: tcfg } = cfg
 
+  const { temporal: tcfg } = cfg
   let connection
   try {
     connection = await createNativeConnection(tcfg)
@@ -52,17 +49,27 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     // workflowThreadPoolSize: 0,
     // workflowsPath: '',
   }
-  if (!cfg.IsProduction) {
-    workerOpts.workflowsPath = path.join(__dirname, '../workflows/index.ts')
+  workerOpts.debugMode = true
+
+  if (cfg.isProduction) {
+    workerOpts.workflowBundle = {
+      codePath: cfg.temporal.worker.bundlePath,
+    }
+    // provide a path to the PayloadConverter you want to customize
+    // note that the instance of this will be loaded once per V8 context
+    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
   }
   else {
-    workerOpts.workflowBundle = {
-      codePath: 'build/workflows.bundle.js',
-    }
+    workerOpts.workflowsPath = path.join(__dirname, '../domain/workflows/index.ts')
+    workerOpts.debugMode = true
+    // use this to do any custom webpack tuning in dev
+    workerOpts.bundlerOptions = workerOpts.bundlerOptions || {}
   }
+
   return workerOpts
 }
 export const createWorker = async (opts: WorkerOptions): Promise<Worker> => {
-  console.log('opts', opts)
-  return await Worker.create(opts)
+
+  const w = await Worker.create(opts)
+  return w
 }

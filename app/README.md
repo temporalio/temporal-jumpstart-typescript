@@ -1,9 +1,5 @@
 # Temporal Jumpstart:Onboardings
 
-## Product Requirements
-
-Checkout the Product Requirements Document [here](Curriculum_Onboarding_UseCase_PRD.pdf)
-
 ### Production Builds
 
 1. _ENSURE JS EXTENSION EXISTS IN WORKFLOW IMPORTS_, then `npx tsc --build` outputs the application
@@ -32,3 +28,12 @@ NODE_ENV=production node index.js
 ### Developer Builds
 
 1. _ENSURE JS EXTENSION EXISTS IN WORKFLOW IMPORTS_, then `npx tsx src/index.ts` starts the Worker in dev mode
+
+### Custom Payload Converter
+
+To use the `buf` PayloadConverter implementation:
+```sh
+npm run build:proto
+```
+
+This uses the default `buf.yaml` and `buf.gen.yaml` config and template to plop generated code into `src/generated`.
