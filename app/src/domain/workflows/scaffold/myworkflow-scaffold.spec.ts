@@ -1,10 +1,8 @@
 import {before, describe} from 'mocha'
 import {TestWorkflowEnvironment} from '@temporalio/testing'
-import {createIntegrationsHandlers} from '../integrations'
-import sinon from 'sinon'
 import {Worker, WorkerOptions} from '@temporalio/worker'
 import {myworkflow} from './myworkflow'
-import {StartMyWorkflowRequest} from '../messages/workflows'
+import {StartMyWorkflowRequest} from '../../messages/workflows'
 import {randomString} from './test-helper'
 import * as assert from 'node:assert'
 

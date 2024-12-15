@@ -1,10 +1,8 @@
-import {before} from 'mocha'
 import {MockActivityEnvironment} from '@temporalio/testing'
 import {createMyActivities} from './myworkflow-activities'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../messages/queries'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/queries'
 import {randomString} from './test-helper'
 import sinon from 'sinon'
-import {MyApiClient} from '../../clients/myapi'
 import * as assert from 'node:assert'
 
 describe('MyWorkflowActivities', function() {

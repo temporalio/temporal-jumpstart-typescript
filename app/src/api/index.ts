@@ -5,7 +5,6 @@ import fs from 'fs'
 import https from 'https'
 import cors from 'cors'
 import {createClients} from '../clients'
-const { createRouter: createV0Router } = require('./v0')
 const { createRouter: createV1Router } = require( './v1')
 createClients(cfg).then(clients => {
   const app: Express = express()
@@ -21,9 +20,7 @@ createClients(cfg).then(clients => {
     }
   }
 
-  const v0 = createV0Router({ config: cfg, clients })
   const v1 = createV1Router({ config :cfg, clients })
-  app.use('/api/v0', v0)
   app.use('/api/v1', v1)
   const httpsServer = https.createServer(options, app)
   return httpsServer.listen(cfg.api.url.port, () => {

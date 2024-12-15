@@ -1,7 +1,7 @@
 import {MyWorkflowActivities} from './myworkflow'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../messages/queries'
-import {MutateMyApplicationRequest} from '../messages/commands'
-import { MyApiClient } from '../../clients/myapi'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/queries'
+import {MutateMyApplicationRequest} from '../../messages/commands'
+import { MyApiClient } from '../../../clients/myapi'
 
 interface MyActivitiesFactoryOptions {
   myApiClient: MyApiClient

@@ -85,6 +85,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
+app/.env
 onboardings/.env
 .env.development.local
 .env.test.local
@@ -148,7 +149,6 @@ dist
 ## environment
 # local env files
 .env*.local
-onboardings/.env
 
 # certs
 *.pem
