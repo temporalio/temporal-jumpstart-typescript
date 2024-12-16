@@ -24,14 +24,18 @@ export const createRouter = (deps: V1Dependencies) => {
       res.status(200).send(result)
     } catch(err: unknown) {
       if(err instanceof WorkflowNotFoundError) {
-        res.send(404)
+        res.sendStatus(404)
         return
       }
-      res.send(500)
+      res.sendStatus(500)
     }
   })
   router.put('/pings/:id', async (req:TypedRequestBody<PutPing>, res: Response) => {
     try {
+      if(!req.body?.ping?.trim()) {
+        res.status(400).send('\'ping\' body attribute is a required input')
+        return
+      }
       let result = await deps.clients.temporal.workflow.execute(ping, {
         taskQueue: deps.config.temporal.worker.taskQueue,
         args: [req.body.ping],
@@ -47,7 +51,7 @@ export const createRouter = (deps: V1Dependencies) => {
         res.status(409).send(`PingWorkflow '${req.params.id}' has already been started.`)
         return
       }
-      res.send(500)
+      res.sendStatus(500)
     }
   })
   return router

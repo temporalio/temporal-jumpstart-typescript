@@ -1,6 +1,6 @@
 import {MockActivityEnvironment} from '@temporalio/testing'
-import {createMyActivities} from './myworkflow-activities'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/queries'
+import {createMyActivities, DEFAULT_DATE_RANGE} from './myworkflow-activities'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/scaffold/queries'
 import {randomString} from './test-helper'
 import sinon from 'sinon'
 import * as assert from 'node:assert'
@@ -19,6 +19,7 @@ describe('MyWorkflowActivities', function() {
       let expected: QueryMyApiResponse = {
         id: q.id,
         value: randomString(),
+        validFrom: DEFAULT_DATE_RANGE,
       }
       let myApiClient = {
         getData: sinon.stub().withArgs(q.id).resolves(expected.value),
