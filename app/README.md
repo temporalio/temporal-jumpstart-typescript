@@ -13,6 +13,34 @@ In separate terminals:
 2. Starter API: `npm run api`
 3. Worker: `npm run domain`
 
+## Verifying The Things
+A [PingWorkflow](src/domain/workflows/ping.ts) is included that supports a `PUT` and `GET` to
+verify Executing and Querying a Workflow.
+
+With all the [three servers](running-the-application) running you should be able to issue the following
+requests to confirm your setup.
+
+### Start PingWorkflow
+```shell
+export PUBLIC_API_URL="https://localhost:3000/api"
+
+curl -X PUT "$PUBLIC_API_URL/v1/pings/myping" \
+-H "Content-Type: application/json" \
+-d '{"ping": "hello"}'
+```
+_should respond with_
+`pong: 'hello`
+
+### Read PingWorkflow
+```shell
+export PUBLIC_API_URL="https://localhost:3000/api"
+
+curl -X GET "$PUBLIC_API_URL/v1/pings/myping"
+```
+_should respond with_
+`pong: 'hello`
+
+
 ### Production Builds
 
 1. _ENSURE JS EXTENSION EXISTS IN WORKFLOW IMPORTS_, then `npx tsc --build` outputs the application

@@ -5,6 +5,8 @@ import fs from 'fs'
 import https from 'https'
 import cors from 'cors'
 import {createClients} from '../clients'
+import {Server} from 'node:net'
+import http from 'node:http'
 const { createRouter: createV0Router } = require('./v0')
 const { createRouter: createV1Router } = require( './v1')
 createClients(cfg).then(clients => {
@@ -25,10 +27,16 @@ createClients(cfg).then(clients => {
   const v1 = createV1Router({ config :cfg, clients })
   app.use('/api/v0', v0)
   app.use('/api/v1', v1)
-  const httpsServer = https.createServer(options, app)
-  return httpsServer.listen(cfg.api.url.port, () => {
+
+  const server: Server = http.createServer(options, app)
+  if (cfg.api.mtls) {
+    const server = https.createServer(options, app)
+
+  }
+  return server.listen(cfg.api.url.port, () => {
     console.log(`API server listening at ${cfg.api.url.toString()}`)
   })
+
 })
 
 

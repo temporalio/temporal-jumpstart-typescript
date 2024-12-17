@@ -9,6 +9,18 @@ Checkout the Product Requirements Document [here](Curriculum_Onboarding_UseCase_
 * configure `.env`
 * `npm install`
 
+### HTTPS Everywhere
+
+The excellent [mkcert](https://github.com/FiloSottile/mkcert) project can simplify creation and management of
+certificates.
+
+1. Install [mkcert](https://github.com/FiloSottile/mkcert).
+2. `mkcert -install` (this just installs the CA to your system)
+3. `mkcert -client localhost` (this makes all our `localhost` servers ok for HTTPS)
+   1. Note that it creates `localhost-client.pem` and `localhost-client-key.pem` files in our root dir. 
+   2. Update your `.env` file paths for both `API_CONNECTION_MTLS_KEY_FILE` and `API_CONNECTION_MTLS_CERT_CHAIN_FILE` variables. 
+   3. We will use these from our different servers to serve over https where needed
+  
 ## Running The Application
 
 In separate terminals:
