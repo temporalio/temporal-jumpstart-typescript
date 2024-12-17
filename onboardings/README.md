@@ -4,10 +4,11 @@
 
 Checkout the Product Requirements Document [here](Curriculum_Onboarding_UseCase_PRD.pdf)
 
-## Setup
+* Configure `.env`
+   * This project uses [dotenv-extended](https://www.npmjs.com/package/dotenv-extended) to load environment variables.
+   * See [.env.schema](app/.env.schema) and [.env.defaults](app/.env.defaults) for variables required to run this project.
+* Install dependencies with `npm install`
 
-* configure `.env`
-* `npm install`
 
 ### HTTPS Everywhere
 

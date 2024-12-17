@@ -1,3 +1,4 @@
+//
 import { Payload, PayloadConverter} from '@temporalio/workflow'
 
 export class CustomPayloadConverter implements PayloadConverter {

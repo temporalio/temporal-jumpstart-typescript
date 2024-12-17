@@ -2,8 +2,10 @@
 
 ## Setup
 
-* configure `.env`
-* `npm install`
+* Configure `.env`
+  * This project uses [dotenv-extended](https://www.npmjs.com/package/dotenv-extended) to load environment variables.
+  * See [.env.schema](app/.env.schema) and [.env.defaults](app/.env.defaults) for variables required to run this project.
+* Install dependencies with `npm install`
 
 ### HTTPS Everywhere
 
