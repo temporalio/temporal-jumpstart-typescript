@@ -12,7 +12,7 @@ typically must be secured:
 The `Data Converter` plugin to SDK Temporal Clients provides the hook to meet "in transit" data protection requirements.
 
 ### Where To Implement Encryption 
-The `PayloadCodec` interface is the right place to perform encryption on `Payloads` as they exit or enter our Temporal 
+The `PayloadCodec` interface is the right place to perform encryption/decryption on `Payloads` as they exit or enter our Temporal 
 Application, NOT inside a `PayloadConverter` implementation.
 This is because `PayloadConverter` will be subject to "Deadlock Detection" that could fail Workflow Tasks after just `1 second`. 
 
