@@ -26,11 +26,17 @@ In separate terminals:
 
 1. Temporal Server: `temporal server start-dev`
 2. Starter API: `npm run api`
-3. Worker: `npm run domain`
+3. Worker: `npm run domain:local`
 
 ## Verifying The Things
-A [PingWorkflow](src/domain/workflows/ping.ts) is included that supports a `PUT` and `GET` to
-verify Executing and Querying a Workflow.
+
+### Tests
+Run tests with `npm test`. 
+This runs a series of smoke tests across the API, Workflows, and Activities.
+
+### Pings and Pongs
+Now try out the provided  [PingWorkflow](src/domain/workflows/ping.ts) to verify the stack.
+It supports a `PUT` and `GET` to verify Executing and Querying a Workflow.
 
 With all the [three servers](running-the-application) running you should be able to issue the following
 requests to confirm your setup.

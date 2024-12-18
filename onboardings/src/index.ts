@@ -3,14 +3,15 @@ import { cfg } from './config'
 
 import * as acts from './domain/workflows/activities.js'
 
-createWorkerOptions(cfg).then(opts => {
+createWorkerOptions(cfg).then(async opts => {
   opts.activities = acts
 
-  return createWorker(opts).then(worker => {
-    return worker.run().catch((err) => {
-      console.error(err)
-      process.exit(1)
-    })
-  })
+  let worker = await createWorker(opts)
+  try {
+    return await worker.run()
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
 
 })

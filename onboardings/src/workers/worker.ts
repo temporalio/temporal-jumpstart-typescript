@@ -57,7 +57,7 @@ export const createWorkerOptions = async (cfg: Config, activities?: object): Pro
     }
     // provide a path to the PayloadConverter you want to customize
     // note that the instance of this will be loaded once per V8 context
-    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/payload-converter')}
+    workerOpts.dataConverter = { payloadConverterPath: require.resolve('../clients/temporal/data-converter/payload-converter')}
   }
   else {
     workerOpts.workflowsPath = path.join(__dirname, '../domain/workflows/index.ts')

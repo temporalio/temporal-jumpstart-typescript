@@ -3,7 +3,7 @@ import { writeFile } from 'fs/promises'
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin'
 import { cfg } from '../config'
 import path from 'path'
-import webpack from 'webpack'
+import {mkdirpSync} from 'mkdirp'
 // https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules
 
 async function bundle() {
@@ -11,7 +11,7 @@ async function bundle() {
 
     workflowsPath: require.resolve('../domain/workflows'),
     // this shows how to provide your own custom payload converter for production
-    payloadConverterPath: require.resolve('../clients/temporal/payload-converter.ts'),
+    payloadConverterPath: require.resolve('../clients/temporal/data-converter/payload-converter.ts'),
     webpackConfigHook: (config) => {
       config.module = config.module || {}
       config.cache = false
@@ -35,8 +35,8 @@ async function bundle() {
   })
 
   const codePath = path.resolve(cfg.temporal.worker.bundlePath)
+  mkdirpSync(path.dirname(cfg.temporal.worker.bundlePath))
   await writeFile(codePath, code)
-  console.log(`Bundle written to ${codePath}`)
 }
 
 bundle().catch((err) => {
