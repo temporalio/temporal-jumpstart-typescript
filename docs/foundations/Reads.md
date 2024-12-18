@@ -61,16 +61,3 @@ Unlike other persistence storage, the *Query* will only return results for a Wor
 *Closed* and has not been purged due to the Namespace _retention period_ specification.
 If you need longer access to the Workflow's data, reach for a proper storage.
 
-## Refactoring Onboarding Use Case
-
-We need to support the View of our submitted Entity Onboarding by fetching the Workflow
-state that represents it.
-
-We will use *Query* to retrieve this state inside our `GET /onboardings/{id}` API handler.
-
-* Introduce explicit `queries` message to meet our *GetEntityOnboardingState* request
-* Remove the complex history collection in our `GET` handler and reduce the code to use our *GetEntityOnboardingStatus* Query.
-* Change our `GET` result to reflect our UI that needs
-    * Approval status and Comment
-    * Current Value
-    * Id

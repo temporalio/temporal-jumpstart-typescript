@@ -310,7 +310,3 @@ If you elect to use the `GetVersion` or `patch` SDK APIs, you must choose betwee
 > Note that in all SDKs except Java need to specify a `string` WorkflowType name explicitly in the Worker registration,type decorator or attribute options
 to "pin" the Type name to maintain this implementation swap.
 
-## Onboardings
-
-### Refactorings
-

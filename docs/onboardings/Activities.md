@@ -1,20 +1,9 @@
-# Activities
-
-* Introduce our first Activity test using `ActivityTestEnvironment`
-* Discuss the importance of _idempotency_ 
-* Understand Dependency Injection in our Activity implementations
-* Understand `ActivityOptions` 
-  * Discuss the different `Timeouts` available 
-  * Understand `RetryOptions` and gotchas
-  * Understand choosing `NonRetryable` failure type ownership
-
-## Onboardings
-
-// TODO fix references from dotNET SDK packages to our Java modules here
+# Onboardings: Activities
 
 ## Workflow : Introduce our first Activity
 
-Our requirements specify that we need to register this Entity with our CRM System.
+> Requirement: Register the input Entity details with our CRM System.
+
 Calls to APIs, Databases, filesystems, etc should always be done inside an `Activity`.
 
 Let's continue doing top-down development by first Executing this activity in our `OnboardEntity` Workflow.
@@ -42,12 +31,12 @@ There are a few refactorings we will perform once we write our test that proves 
 One of the main things we need to ensure in our Activity implementations is _idempotency_.
 Here, we want to verify the `Entity` does not already exist in the CRM before attempting to register it.
 
-### Activity versus LocalActivity 
+### Activity versus LocalActivity
 
 Note, that we are using a regular `Activity` since we are making an API call inside it and it is not clear
-what latency guarantees we have around this API usage. 
-If we were doing a simple cache lookup, a quick calculation, or had confidence that our API was very fast, 
-we could elect to use a `LocalActivity`. 
+what latency guarantees we have around this API usage.
+If we were doing a simple cache lookup, a quick calculation, or had confidence that our API was very fast,
+we could elect to use a `LocalActivity`.
 
 ### Refactorings
 
@@ -98,9 +87,9 @@ There are two "sides" to configure these (string) `ErrorType` exclusions.
 Which you do, depends on who "owns" the retry rule.
 
 1. **_Workflow Owner_** : When calling the activity *from the Workflow* you can provide the `ErrorType` as one of the `NonRetryableErrorTypes`
-  * This is useful when the Workflow wants to enforce some kind of compensation logic or short-circuiting within a time span.
-  * Avoid coupling Workflow execution path to low-level exceptions that should be more generalized in your Activities.
+* This is useful when the Workflow wants to enforce some kind of compensation logic or short-circuiting within a time span.
+* Avoid coupling Workflow execution path to low-level exceptions that should be more generalized in your Activities.
 2. **_Activity Owner_** : When an Activity raises an `ApplicationFailureException` and sets the `nonRetryable` flag to `true`
-  * This is useful if your Activity knows it will never recover and so will cause a stuck Workflow.
-  * A Workflow author should often not be coupled to such low-level concerns so the Activity can own this rule.
-  * Avoid coupling Activity retryability to some assumption about how it is being executed. Setting this flag from the Activity should be reserved for cases where it will never succeed.
+* This is useful if your Activity knows it will never recover and so will cause a stuck Workflow.
+* A Workflow author should often not be coupled to such low-level concerns so the Activity can own this rule.
+* Avoid coupling Activity retryability to some assumption about how it is being executed. Setting this flag from the Activity should be reserved for cases where it will never succeed.

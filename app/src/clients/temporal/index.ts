@@ -57,6 +57,7 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
     connection: await createConnection(mustTcfg),
     namespace: mustTcfg.connection.namespace,
     dataConverter: {
+      // the path is specified here since it is loaded into the Workflow Context and is subject to the "sandbox"
       payloadConverterPath: require.resolve('./payload-converter'),
       payloadCodecs: [await getCustomPayloadCodec()]
     },
