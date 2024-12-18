@@ -1,10 +1,8 @@
-import { log } from '@temporalio/workflow'
-import {PingRequest, PingResponse} from '../messages/workflows/v0'
+import {defineQuery, setHandler} from '@temporalio/workflow'
+export const pong = defineQuery<string>('pong');
 
-export async function ping(params: PingRequest): Promise<PingResponse> {
-  log.info('ping workflow received', params)
-  const res: PingResponse = {
-    value: `${params.value} is here`,
-  }
-  return Promise.resolve(res)
+export async function ping(args: string): Promise<string> {
+  let result = `pong: '${args}'`
+  setHandler(pong, () => result)
+  return result
 }

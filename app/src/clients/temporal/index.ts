@@ -1,6 +1,7 @@
 import { cfg, TemporalConfig } from '../../config'
 import { Connection, Client } from '@temporalio/client'
 import { NativeConnection } from '@temporalio/worker'
+import {getCustomPayloadCodec} from './data-converter/custom-payload-codec'
 
 interface ConnectionOptions {
   address: string
@@ -55,6 +56,10 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   return new Client({
     connection: await createConnection(mustTcfg),
     namespace: mustTcfg.connection.namespace,
-    dataConverter: { payloadConverterPath: require.resolve('./payload-converter') },
+    dataConverter: {
+      // the path is specified here since it is loaded into the Workflow Context and is subject to the "sandbox"
+      payloadConverterPath: require.resolve('./payload-converter'),
+      payloadCodecs: [await getCustomPayloadCodec()]
+    },
   })
 }

@@ -1,7 +1,7 @@
 import { createWorker, createWorkerOptions } from './workers'
 import { cfg } from './config'
 
-import * as acts from './domain/workflows/activities.js'
+import * as acts from './domain/workflows/scaffold/myworkflow-activities'
 
 createWorkerOptions(cfg).then(opts => {
   opts.activities = acts

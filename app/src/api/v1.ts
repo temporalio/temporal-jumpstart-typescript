@@ -2,53 +2,57 @@ import express, {type Router, Response, request} from 'express'
 import { Clients } from '../clients'
 import { Config } from '../config'
 import {TypedRequestBody} from './typed-request-body'
-import {OnboardingsPut} from './messages/v0'
-import {OnboardEntityRequest} from '../domain/messages/workflows/v1'
 import {WorkflowIdReusePolicy} from '@temporalio/workflow'
-import {WorkflowNotFoundError} from '@temporalio/client'
-import {EntityOnboardingState} from '../domain/messages/queries/v0'
-import {queryGetState} from '../domain/workflows/onboard-entity'
+import {WorkflowExecutionAlreadyStartedError, WorkflowNotFoundError} from '@temporalio/client'
+import { PutPing } from './messages'
+import { ping } from '../domain/workflows'
+
+import {pong} from '../domain/workflows/ping'
+
 
 interface V1Dependencies {
   clients: Clients
   config: Config
 }
-async function onboardEntity(params: OnboardEntityRequest) {}
 export const createRouter = (deps: V1Dependencies) => {
   const router: Router = express.Router()
-  router.get('/onboardings/:id', async (req, res) => {
+  router.get('/pings/:id', async (req, res) => {
     const workflowId = req.params.id
-
     try {
       const handle = deps.clients.temporal.workflow.getHandle(workflowId)
-      let result: EntityOnboardingState = await handle.query(queryGetState)
-      res.json(result)
+      let result: string = await handle.query(pong)
+      res.status(200).send(result)
     } catch(err: unknown) {
       if(err instanceof WorkflowNotFoundError) {
-        res.send(404)
+        res.sendStatus(404)
         return
       }
-      res.send(500)
+      res.sendStatus(500)
     }
-
   })
-  router.put('/onboardings/:id', async (req:TypedRequestBody<OnboardingsPut>, res: Response) => {
+  router.put('/pings/:id', async (req:TypedRequestBody<PutPing>, res: Response) => {
+    try {
+      if(!req.body?.ping?.trim()) {
+        res.status(400).send('\'ping\' body attribute is a required input')
+        return
+      }
+      let result = await deps.clients.temporal.workflow.execute(ping, {
+        taskQueue: deps.config.temporal.worker.taskQueue,
+        args: [req.body.ping],
+        workflowId: `${req.params.id}`,
+        retry: undefined,
+        workflowIdReusePolicy: WorkflowIdReusePolicy.ALLOW_DUPLICATE_FAILED_ONLY,
+      })
+      res.location(`./${req.params.id}`)
+      res.status(202).send(result)
 
-    let cmd:OnboardEntityRequest = {...req.body,
-      deputyOwnerEmail: '',
-      completionTimeoutSeconds: 60,
-      skipApproval: false,
+    } catch(err: unknown) {
+      if(err instanceof WorkflowExecutionAlreadyStartedError) {
+        res.status(409).send(`PingWorkflow '${req.params.id}' has already been started.`)
+        return
+      }
+      res.sendStatus(500)
     }
-
-    let wfExec = await deps.clients.temporal.workflow.start(onboardEntity, {
-      taskQueue: deps.config.temporal.worker.taskQueue,
-      args: [cmd],
-      workflowId: `${cmd.id}`,
-      retry: undefined,
-      workflowIdReusePolicy: WorkflowIdReusePolicy.ALLOW_DUPLICATE_FAILED_ONLY,
-    })
-    res.location(`./${req.params.id}`)
-    res.sendStatus(202)
   })
   return router
 }
