@@ -1,11 +1,15 @@
-# temporal-jumpstart-typescript
-Temporal Jumpstart for TypeScript SDK
+# Temporal Jumpstart : TypeScript SDK
 
-### Requirements
+The Temporal Jumpstart for Applications program with the [TypeScript SDK](https://docs.temporal.io/develop/typescript).
+
+
+### System Requirements
 
 * NodeJS
 * NPM
 * [npx](https://docs.npmjs.com/cli/v10/commands/npx)
+* [Temporal CLI](https://github.com/temporalio/cli)
+
 
 ### Structure
 
