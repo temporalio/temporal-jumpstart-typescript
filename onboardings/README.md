@@ -40,3 +40,50 @@ There are a few preparatory tasks required to run a Temporal TypeScript SDK Appl
   * Expose these implementations to the respective Temporal SDK Clients (Worker and Starter).
 * Bundle Workflow code for reference in the `Worker` options. 
   * See the [script](src/scripts/build-workflow-bundle.ts) included in this project for an example.
+
+
+# Verifying The Things
+
+### Tests
+Run tests with `npm test`.
+This runs a series of tests across the API, Workflows, and Activities.
+
+### Start Onboarding An Entity
+Now try out the provided  [OnboardEntity](src/domain/workflows/onboard-entity.ts) to verify the stack.
+It supports a `PUT` and `GET` to verify Executing and Querying a Workflow.
+
+With all [three servers](running-the-application) running you should be able to issue the following
+requests to confirm your setup.
+
+### Start Onboard Entity
+```shell
+export PUBLIC_API_URL="https://localhost:3000/api"
+
+curl -X PUT "$PUBLIC_API_URL/v1/onboardings/customer_123" \
+-H "Content-Type: application/json" \
+-d '{"id": "customer_123", "value": "Bob Smith"}'
+```
+_should respond with_
+`202 Accepted`
+
+### Read Entity Onboarding
+```shell
+export PUBLIC_API_URL="https://localhost:3000/api"
+
+curl -X GET "$PUBLIC_API_URL/v1/onboardings/customer_123"
+```
+_should respond with something like_
+```shell
+{
+  "id":"customer_123",
+  "status":"1",
+  "sentRequest":{
+      "id":"customer_123",
+      "value":"Bob Smith",
+      "deputyOwnerEmail":"",
+      "completionTimeoutSeconds":60,
+      "skipApproval":false
+  },
+  "approval":{"status":"PENDING","comment":""}
+}
+```

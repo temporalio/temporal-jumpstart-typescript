@@ -28,7 +28,7 @@ const getConnectionOptions = (tcfg: TemporalConfig): ConnectionOptions => {
     }
   }
 
-  console.log('connection options', connOpts)
+  console.log('Temporal Connection: ', connOpts)
   return connOpts
 }
 export const createConnection = async (tcfg?: TemporalConfig): Promise<Connection> => {
@@ -58,7 +58,7 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
     namespace: mustTcfg.connection.namespace,
     dataConverter: {
       // the path is specified here since it is loaded into the Workflow Context and is subject to the "sandbox"
-      payloadConverterPath: require.resolve('./payload-converter'),
+      payloadConverterPath: require.resolve('./data-converter/payload-converter'),
       payloadCodecs: [await getCustomPayloadCodec()]
     },
   })

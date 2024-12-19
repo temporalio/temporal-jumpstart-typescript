@@ -1,7 +1,6 @@
-# temporal-jumpstart-typescript
-Temporal Jumpstart for TypeScript SDK
+# Temporal Jumpstart : TypeScript SDK
 
-### Requirements
+### System Requirements
 
 * NodeJS
 * NPM
@@ -11,7 +10,6 @@ Temporal Jumpstart for TypeScript SDK
 
 * `/app` is a playground scaffold for getting us started. This is where we will drive out our Application together.
 * `/onboardings` is the implementation that serves the [Onboard Entity Curriculum](/onboardings/README.md).
-
 
 #### Packages
 
@@ -65,23 +63,5 @@ This package represents the services exposed by this Application.
 The hosting concerns and registration of exposed behaviors should be placed here. 
 Encapsulating this allows us to make code-sharing easier across teams.
 
-### Messaging 
-
-This project uses Plain Old TypeScript Objects (POTO) for messaging.
-There is some sample code in here using  [protobufs](https://protobuf.dev/) for message contracts but
-due to workflow bundle size constraints, we opt not to use that at this time. 
-It is left for demonstration of CustomPayloadConverter implementation
-
-#### protobuf support
-TypeScript support is achieved via:
-* [protobuf-es](https://github.com/bufbuild/protobuf-es/tree/main)
-  * See [details](https://buf.build/blog/protobuf-conformance)
-* [buf](https://buf.build/) (installed as a project package)
-
-_Generation & Versioning_
-
-Generating TypeScript schemas and types is done by:
-```sh
-# explicitly exclude node_modules from interference with dependencies that use protobufs
-npx buf generate --exclude-path node_modules
-```
+##### scripts
+These are scripts that meet operational requirements to run our Application.
