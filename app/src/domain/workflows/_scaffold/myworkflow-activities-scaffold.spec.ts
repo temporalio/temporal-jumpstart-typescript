@@ -1,6 +1,6 @@
 import {MockActivityEnvironment} from '@temporalio/testing'
 import {createMyActivities, DEFAULT_DATE_RANGE} from './myworkflow-activities'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/scaffold/queries'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/_scaffold/queries'
 import {randomString} from './test-helper'
 import sinon from 'sinon'
 import * as assert from 'node:assert'
