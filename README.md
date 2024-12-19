@@ -15,6 +15,10 @@
 
 Both the `app` scaffold and the `onboardings` application follow this package structure:
 
+#### [_scaffold](app/src/domain/workflows/_scaffold) 
+These directories are scaffolds of the boilerplate used in specs and related components that can 
+be copied over and renamed to get going quickly.
+
 ##### [api](app/src/api) 
 This is where [Starter](/docs/foundations/Starters.md) related concerns are found. 
 It is implemented here as a simple [REST api](https://martinfowler.com/articles/richardsonMaturityModel.html).
