@@ -1,6 +1,6 @@
-import {StartMyWorkflowRequest} from '../../messages/scaffold/workflows'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/scaffold/queries'
-import {MutateMyApplicationRequest} from '../../messages/scaffold/commands'
+import {StartMyWorkflowRequest} from '../../messages/_scaffold/workflows'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/_scaffold/queries'
+import {MutateMyApplicationRequest} from '../../messages/_scaffold/commands'
 
 export interface MyWorkflowActivities {
   queryMyApi: (q: QueryMyApiRequest) => Promise<QueryMyApiResponse>

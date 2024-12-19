@@ -26,11 +26,9 @@ createClients(cfg).then(clients => {
   const v1 = createV1Router({config: cfg, clients})
   app.use('/api/v1', v1)
 
-
-  const server: Server = http.createServer(options, app)
+  let server: Server = http.createServer(options, app)
   if (cfg.api.mtls) {
-    const server = https.createServer(options, app)
-
+    server = https.createServer(options, app)
   }
   return server.listen(cfg.api.url.port, () => {
     console.log(`API server listening at ${cfg.api.url.toString()}`)

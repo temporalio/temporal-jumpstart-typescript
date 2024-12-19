@@ -27,7 +27,7 @@ const getConnectionOptions = (tcfg: TemporalConfig): ConnectionOptions => {
     }
   }
 
-  console.log('connection options', connOpts)
+  console.log('Temporal Connection:', connOpts)
   return connOpts
 }
 export const createConnection = async (tcfg?: TemporalConfig): Promise<Connection> => {
@@ -55,6 +55,6 @@ export const createClient = async (tcfg?: TemporalConfig): Promise<Client> => {
   return new Client({
     connection: await createConnection(mustTcfg),
     namespace: mustTcfg.connection.namespace,
-    dataConverter: { payloadConverterPath: require.resolve('./payload-converter') },
+    dataConverter: { payloadConverterPath: require.resolve('./data-converter/payload-converter') },
   })
 }
