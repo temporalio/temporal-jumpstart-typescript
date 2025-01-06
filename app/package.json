@@ -18,7 +18,9 @@
     "domain:local": "tsc --noEmit && tsx ./src/index.ts",
     "domain.watch": "tsx watch ./src/index.ts",
     "api": "tsc --noEmit && tsx ./src/api/index.ts",
-    "update": "npm-check-updates -u && npm i"
+    "update": "npm-check-updates -u && npm i",
+    "downloadtestserver:windows": "PLATFORM=windows ARCH=amd64 DEST=bin tsx src/scripts/fetch-test-server.ts",
+    "downloadtestserver:mac": "PLATFORM=darwin DST=bin tsx src/scripts/fetch-test-server.ts"
   },
   "repository": {
     "type": "git",

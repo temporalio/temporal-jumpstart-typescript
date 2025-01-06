@@ -8,6 +8,8 @@ import * as process from 'node:process'
 import fs from 'fs'
 import {mkdirp} from 'mkdirp'
 // Downloads `temporal-test-server` (the Java SDK implementation) to a tmp dir for the right platform+architecture
+// Default is Mac support.
+// Windows can downloaded with `PLATFORM=windows ARCH=amd64 npx tsx src/scripts/fetch-test-server`.
 // If `DEST` is provided it'll copy the extracted binary to that location (directory)
 (async () => {
   const tmpDir = path.join(os.tmpdir(), crypto.randomUUID())
