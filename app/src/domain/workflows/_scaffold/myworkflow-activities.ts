@@ -1,8 +1,8 @@
 import {MyWorkflowActivities} from './myworkflow'
-import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/scaffold/queries'
-import {MutateMyApplicationRequest} from '../../messages/scaffold/commands'
+import {QueryMyApiRequest, QueryMyApiResponse} from '../../messages/_scaffold/queries'
+import {MutateMyApplicationRequest} from '../../messages/_scaffold/commands'
 import { MyApiClient } from '../../../clients/myapi'
-import {DateRange} from '../../messages/scaffold/values'
+import {DateRange} from '../../messages/_scaffold/values'
 
 interface MyActivitiesFactoryOptions {
   myApiClient: MyApiClient

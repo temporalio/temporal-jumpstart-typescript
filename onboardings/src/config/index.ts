@@ -68,16 +68,11 @@ export interface APIConfig {
   url: URL
 }
 
-export interface PubSubConfig {
-  port: string
-  mtls?: MTLSConfig
-  url: URL
-}
-
 const createApiCfg =  (): APIConfig => {
   const apiUrlEnv = process.env['API_URL']
   const apiUrl = new URL(apiUrlEnv || 'https://localhost:4000/api')
-  const mtls: MTLSConfig = {
+  let mtls: MTLSConfig | undefined
+  mtls = {
     certChainFile: process.env['API_CONNECTION_MTLS_CERT_CHAIN_FILE'],
     keyFile: process.env['API_CONNECTION_MTLS_KEY_FILE'],
     // key: Buffer.from(process.env['API_CONNECTION_MTLS_KEY'] || ''),
@@ -88,9 +83,13 @@ const createApiCfg =  (): APIConfig => {
     serverName: process.env['API_CONNECTION_MTLS_SERVER_NAME'],
     serverRootCACertificateFile: process.env['API_CONNECTION_MTLS_SERVER_ROOT_CA_CERTIFICATE_FILE'],
   }
+  if(apiUrl.protocol.toLowerCase().includes('https') && (!mtls.certChainFile || !mtls.keyFile)) {
+    throw new Error('Invalid config: HTTPS requires API_CONNECTION_MTLS* settings')
+  }
+
   return {
     port: apiUrl.port,
-    mtls,
+    mtls: mtls.keyFile && mtls.certChainFile ? mtls : undefined,
     url: apiUrl,
   }
 }
@@ -158,10 +157,10 @@ const createTemporalCfg = (): TemporalConfig => {
 const temporalCfg = createTemporalCfg()
 const apiCfg: APIConfig = createApiCfg()
 export const cfg: Config = {
-      temporal: temporalCfg,
-      isProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
-      api: apiCfg,
-    }
+  temporal: temporalCfg,
+  isProduction: process.env['NODE_ENV']?.toLowerCase() === 'production',
+  api: apiCfg,
+}
 
 function numOrNot(key: string): number | undefined {
   if (process.env[key]) {

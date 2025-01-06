@@ -1,8 +1,8 @@
 import {before, describe} from 'mocha'
-import {TestWorkflowEnvironment} from '@temporalio/testing'
+import {TestWorkflowEnvironment, TimeSkippingWorkflowClient} from '@temporalio/testing'
 import {Worker, WorkerOptions} from '@temporalio/worker'
 import {myworkflow} from './myworkflow'
-import {StartMyWorkflowRequest} from '../../messages/scaffold/workflows'
+import {StartMyWorkflowRequest} from '../../messages/_scaffold/workflows'
 import {randomString} from './test-helper'
 import * as assert from 'node:assert'
 
@@ -14,6 +14,8 @@ describe('MyWorkflow', function() {
   // so be careful to use unique workflowIDs for your tests.
   before(async function () {
     testEnv = await TestWorkflowEnvironment.createLocal({})
+    // alternatively use the "timeskipping" server
+    // testEnv = await TestWorkflowEnvironment.createTimeSkipping({})
   })
   after(async function () {
     testEnv?.teardown()
