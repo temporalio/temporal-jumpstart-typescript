@@ -68,12 +68,6 @@ export interface APIConfig {
   url: URL
 }
 
-export interface PubSubConfig {
-  port: string
-  mtls?: MTLSConfig
-  url: URL
-}
-
 const createApiCfg =  (): APIConfig => {
   const apiUrlEnv = process.env['API_URL']
   const apiUrl = new URL(apiUrlEnv || 'https://localhost:4000/api')

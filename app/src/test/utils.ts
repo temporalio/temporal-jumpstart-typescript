@@ -4,6 +4,11 @@
 import {Client, WorkflowClient} from '@temporalio/client'
 import {Config} from '../config'
 import crypto from 'crypto'
+import {
+  LocalTestWorkflowEnvironmentOptions,
+  TestWorkflowEnvironment,
+  TimeSkippingTestWorkflowEnvironmentOptions
+} from '@temporalio/testing'
 
 const sinon = require('sinon')
 export const createTemporalClient = (wf?: WorkflowClient):Client => {
@@ -13,9 +18,15 @@ export const createTemporalClient = (wf?: WorkflowClient):Client => {
     wf.start = sinon.stub().returns(sinon.stub())
   }
 
-  const tc= sinon.createStubInstance(Client)
+  let tc= sinon.createStubInstance(Client)
   tc.workflow = wf
   return tc
+}
+export const createLocalTestWorkflowEnvironment = async (opts:  LocalTestWorkflowEnvironmentOptions): Promise<TestWorkflowEnvironment> => {
+  return TestWorkflowEnvironment.createLocal(opts)
+}
+export const createTimeSkippingTestWorkflowEnvironment = async(opts: TimeSkippingTestWorkflowEnvironmentOptions): Promise<TestWorkflowEnvironment> => {
+  return TestWorkflowEnvironment.createTimeSkipping(opts)
 }
 export const createCfg = (taskQueue?: string):Config => {
   if(!taskQueue) {

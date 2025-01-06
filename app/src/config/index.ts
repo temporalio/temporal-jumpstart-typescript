@@ -49,26 +49,18 @@ export interface TemporalWorker {
   bundlePath: string
 }
 
-// #TEMPORAL_WORKER_RATE_LIMITS_MAX_WORKER_ACTIVITIES_PER_SECOND=
 export interface TemporalConnection {
   namespace: string
   target: string
   mtls: MTLSConfig | undefined
 }
 
-//     #TEMPORAL_WORKER_RATE_LIMITS_MAX_TASK_QUEUE_ACTIVITIES_PER_SECOND=
 export interface TemporalConfig {
   connection: TemporalConnection
   worker: TemporalWorker
 }
 
 export interface APIConfig {
-  port: string
-  mtls?: MTLSConfig
-  url: URL
-}
-
-export interface PubSubConfig {
   port: string
   mtls?: MTLSConfig
   url: URL
