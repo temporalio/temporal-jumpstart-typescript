@@ -5,6 +5,7 @@ import {myworkflow} from './myworkflow'
 import {StartMyWorkflowRequest} from '../../messages/_scaffold/workflows'
 import {randomString} from './test-helper'
 import * as assert from 'node:assert'
+import * as console from 'node:console'
 
 const SUT_WORKFLOWS_PATH = require.resolve('./myworkflow')
 
@@ -82,12 +83,13 @@ describe('MyWorkflow', function() {
           console.log('events', history.events?.length)
         }))
       })
-      assert.ok(history)
-      assert.equal(history?.events.length, 5)
+
       if(history) {
-        await Worker.runReplayHistory({
-          workflowsPath: require.resolve('./myworkflow.timer'),
-        }, history, args.id)
+        await assert.rejects(async() => {
+          await Worker.runReplayHistory({
+            workflowsPath: require.resolve('./myworkflow.nde_extra_activity'),
+          }, history, args.id)
+        },/nondeterminism/gi, 'should have received an error for nondeterminism')
       }
     })
   })

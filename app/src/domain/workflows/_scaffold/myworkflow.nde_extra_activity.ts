@@ -11,7 +11,7 @@ export interface MyWorkflowActivities {
 }
 
 export async function myworkflow(args: StartMyWorkflowRequest): Promise<void> {
-  console.log('DID I DO THIS')
-  // await mutateMyApplication({id: '', value: ''})
-  await sleep(-1)
+  // activity that wasnt there before
+  await mutateMyApplication({id: '', value: ''})
+  await sleep(1000)
 }
