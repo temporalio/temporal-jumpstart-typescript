@@ -69,6 +69,7 @@ describe('MyWorkflow', function() {
 
       await assert.doesNotReject(async () => {
         await (worker.runUntil(async () => {
+          // we use `start` instead of execute to move along asynchronously (don't block on timer)
           const handle = await testEnv.client.workflow.start(myworkflow, {
             args: [args],
             taskQueue: opts.taskQueue,
@@ -77,10 +78,10 @@ describe('MyWorkflow', function() {
               maximumAttempts: 1,
             }
           })
+          // pause to let the server write all the history down before fetching it.
+          // without this, only a partial history result will be assigned for replay
           await new Promise(r=> setTimeout(r, 250))
-
           history = await handle.fetchHistory()
-          console.log('events', history.events?.length)
         }))
       })
 
