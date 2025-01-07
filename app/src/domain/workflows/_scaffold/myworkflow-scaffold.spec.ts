@@ -1,6 +1,6 @@
 import {before, describe} from 'mocha'
 import {TestWorkflowEnvironment, TimeSkippingWorkflowClient} from '@temporalio/testing'
-import {Worker, WorkerOptions} from '@temporalio/worker'
+import {History, Worker, WorkerOptions} from '@temporalio/worker'
 import {myworkflow} from './myworkflow'
 import {StartMyWorkflowRequest} from '../../messages/_scaffold/workflows'
 import {randomString} from './test-helper'
@@ -50,4 +50,46 @@ describe('MyWorkflow', function() {
       })
     })
   })
+  describe('replayTest', function() {
+    it('should fail on NDE due to timer change', async function () {
+      let opts: WorkerOptions = {
+        connection: testEnv.nativeConnection,
+        taskQueue: 'test',
+        workflowsPath: SUT_WORKFLOWS_PATH,
+        activities: {},
+      }
+      const args: StartMyWorkflowRequest = {
+        id: randomString(),
+        value: randomString(),
+      }
+
+      let worker = await Worker.create(opts)
+      let history: History | undefined = undefined
+
+      await assert.doesNotReject(async () => {
+        await (worker.runUntil(async () => {
+          const handle = await testEnv.client.workflow.start(myworkflow, {
+            args: [args],
+            taskQueue: opts.taskQueue,
+            workflowId: args.id,
+            retry: {
+              maximumAttempts: 1,
+            }
+          })
+          await new Promise(r=> setTimeout(r, 250))
+
+          history = await handle.fetchHistory()
+          console.log('events', history.events?.length)
+        }))
+      })
+      assert.ok(history)
+      assert.equal(history?.events.length, 5)
+      if(history) {
+        await Worker.runReplayHistory({
+          workflowsPath: require.resolve('./myworkflow.timer'),
+        }, history, args.id)
+      }
+    })
+  })
+
 })
