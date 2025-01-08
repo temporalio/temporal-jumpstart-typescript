@@ -94,5 +94,4 @@ describe('MyWorkflow', function() {
       }
     })
   })
-
 })
